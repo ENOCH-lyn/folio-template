@@ -1,0 +1,102 @@
+[
+  {
+    "key": "1440-light",
+    "introMs": 7025,
+    "errors": [],
+    "caseFocus": "case__close mono",
+    "afterClose": {
+      "open": false,
+      "focus": "card__link"
+    },
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowers": [],
+    "wordmarkFill": 0.659,
+    "imagesLoaded": "9/9",
+    "webgl": true
+  },
+  {
+    "key": "1440-dark",
+    "introMs": 7049,
+    "errors": [],
+    "caseFocus": "case__close mono",
+    "afterClose": {
+      "open": false,
+      "focus": "card__link"
+    },
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "overflowers": [],
+    "wordmarkFill": 0.659,
+    "imagesLoaded": "9/9",
+    "webgl": true
+  },
+  {
+    "key": "1024-light",
+    "introMs": 5072,
+    "errors": [],
+    "caseFocus": "case__close mono",
+    "afterClose": {
+      "open": false,
+      "focus": "card__link"
+    },
+    "scrollWidth": 1024,
+    "clientWidth": 1024,
+    "overflowers": [],
+    "wordmarkFill": 0.755,
+    "imagesLoaded": "9/9",
+    "webgl": true
+  },
+  {
+    "key": "1024-dark",
+    "introMs": 5214,
+    "errors": [],
+    "caseFocus": "case__close mono",
+    "afterClose": {
+      "open": false,
+      "focus": "card__link"
+    },
+    "scrollWidth": 1024,
+    "clientWidth": 1024,
+    "overflowers": [],
+    "wordmarkFill": 0.755,
+    "imagesLoaded": "9/9",
+    "webgl": true
+  },
+  {
+    "key": "390-light",
+    "introMs": 6909,
+    "errors": [],
+    "caseFocus": "case__close mono",
+    "afterClose": {
+      "open": false,
+      "focus": "card__link"
+    },
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowers": [],
+    "wordmarkFill": 1,
+    "imagesLoaded": "9/9",
+    "webgl": true
+  },
+  {
+    "key": "390-dark",
+    "introMs": 6850,
+    "errors": [],
+    "caseFocus": "case__close mono",
+    "afterClose": {
+      "open": false,
+      "focus": "card__link"
+    },
+    "scrollWidth": 390,
+    "clientWidth": 390,
+    "overflowers": [],
+    "wordmarkFill": 1,
+    "imagesLoaded": "9/9",
+    "webgl": true
+  },
+  {
+    "key": "reduced-motion",
+    "errors": []
+  }
+]

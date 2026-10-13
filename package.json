@@ -1,0 +1,27 @@
+{
+  "name": "folio-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A generic, motion-rich portfolio template for visual designers. All content is placeholder.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "qa": "node scripts/visual-qa.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4"
+  }
+}
