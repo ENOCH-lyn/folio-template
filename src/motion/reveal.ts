@@ -54,9 +54,10 @@ function rise() {
   )
   gsap.fromTo(
     $$('.manifesto__pill'),
-    { clipPath: 'inset(0% 50% 0% 50% round 999px)' },
+    { clipPath: 'polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%)' },
     {
-      clipPath: 'inset(0% 0% 0% 0% round 999px)',
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      clearProps: 'clipPath',
       duration: 1.3,
       ease: 'expo.inOut',
       stagger: 0.2,
@@ -172,7 +173,7 @@ function folio() {
       duration: 0.25,
       ease: 'power2.in',
       onComplete: () => {
-        no.textContent = `[${n}]`
+        no.textContent = n
         name.textContent = label
         gsap.fromTo(els, { yPercent: down ? 110 : -110 }, { yPercent: 0, duration: 0.5, ease: 'expo.out', stagger: 0.04 })
       },
@@ -185,7 +186,7 @@ function folio() {
   }
 
   // Hero + 宣言都算作 [00]，跳转式滚动（锚点 / 回到顶部）时也能正确复位
-  ScrollTrigger.create({ trigger: '.hero', start: 'top top', endTrigger: '#work', end: 'top center', onToggle: (s) => s.isActive && set('00', 'Index') })
+  ScrollTrigger.create({ trigger: '.hero', start: 'top top', endTrigger: '#work', end: 'top center', onToggle: (s) => s.isActive && set('00', 'Title') })
   for (const sec of $$('[data-folio]')) {
     ScrollTrigger.create({
       trigger: sec,
@@ -195,10 +196,14 @@ function folio() {
     })
   }
 
+  const bar = $('.progress__track i')
   ScrollTrigger.create({
     start: 0,
     end: 'max',
-    onUpdate: (s) => (val.textContent = pad(s.progress * 100, 3)),
+    onUpdate: (s) => {
+      val.textContent = pad(s.progress * 100, 3)
+      bar.style.transform = `scaleX(${s.progress})`
+    },
   })
 }
 

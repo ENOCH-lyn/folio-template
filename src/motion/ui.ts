@@ -86,8 +86,8 @@ export function initTheme(onChange: () => void) {
   const sync = () => {
     const dark = html.dataset.theme === 'dark'
     btn.setAttribute('aria-pressed', String(dark))
-    btn.setAttribute('aria-label', dark ? 'Switch to paper theme' : 'Switch to darkroom theme')
-    meta?.setAttribute('content', dark ? '#0f0e0d' : '#eeeae2')
+    btn.setAttribute('aria-label', dark ? 'Switch to day theme' : 'Switch to night theme')
+    meta?.setAttribute('content', dark ? '#0b0b0d' : '#f3f4f6')
   }
   sync()
 
@@ -96,7 +96,7 @@ export function initTheme(onChange: () => void) {
     const swap = () => {
       html.dataset.theme = next
       try {
-        localStorage.setItem('proof-theme', next)
+        localStorage.setItem('operator-theme', next)
       } catch {}
       sync()
       onChange()

@@ -29,8 +29,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
  */
 async function warmImages() {
   const src = await readFile('src/content.ts', 'utf8')
-  const prompts = [...src.matchAll(/img\('([^']+)',\s*'([a-z_0-9]+)'\)/g)].map(
-    ([, p, s]) => `https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=${encodeURIComponent(p)}&image_size=${s}`,
+  const style = src.match(/const STYLE = '([^']+)'/)?.[1] ?? ''
+  const prompts = [...src.matchAll(/\b(img|art)\('([^']+)',\s*'([a-z_0-9]+)'\)/g)].map(
+    ([, fn, raw, s]) => [fn === 'art' ? `${raw}, ${style}` : raw, s],
+  ).map(
+    ([p, s]) => `https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=${encodeURIComponent(p)}&image_size=${s}`,
   )
   const ready = (u) =>
     fetch(u, { redirect: 'manual' })
@@ -94,7 +97,7 @@ async function run() {
       page.on('requestfailed', (r) => !r.url().includes('text_to_image') && errors.push(`requestfailed ${r.url()}`))
 
       await page.setViewport({ width: vp.width, height: vp.height, deviceScaleFactor: 1, isMobile: vp.mobile, hasTouch: vp.mobile })
-      await page.evaluateOnNewDocument((t) => localStorage.setItem('proof-theme', t), theme)
+      await page.evaluateOnNewDocument((t) => localStorage.setItem('operator-theme', t), theme)
       const t0 = Date.now()
       await page.goto(BASE, { waitUntil: 'networkidle2', timeout: 60000 })
       await page.waitForFunction(() => !document.querySelector('.loader') && document.documentElement.classList.contains('is-ready'), { timeout: 20000 })
@@ -201,7 +204,7 @@ async function run() {
         const overflowers = [...document.querySelectorAll('body *')]
           .filter((el) => {
             const b = el.getBoundingClientRect()
-            return b.width > 0 && b.right > doc.clientWidth + 1 && !el.closest('.marquee, .process, .preview, .grain, .footer__giant, .case, .cursor, .menu, .toast, .loader')
+            return b.width > 0 && b.right > doc.clientWidth + 1 && !el.closest('.marquee, .process, .preview, .grain, .footer__giant, .case, .cursor, .menu, .toast, .loader, .hero__frame, .scanlines')
           })
           .slice(0, 8)
           .map((el) => `${el.tagName.toLowerCase()}.${[...el.classList].join('.')} < ${el.parentElement?.className} "${el.textContent.trim().slice(0, 24)}" right=${Math.round(el.getBoundingClientRect().right)}`)

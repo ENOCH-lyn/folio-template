@@ -1,4 +1,4 @@
-/** 预加载「套准」→ Hero 入场。返回 Promise，在入场开始时 resolve */
+/** 预加载「系统启动」→ 斜切色带擦除 → Hero 入场。返回 Promise，在入场开始时 resolve */
 import { gsap } from 'gsap'
 import { $, $$, pad, reducedMotion } from '../env'
 import type { Halftone } from './halftone'
@@ -53,7 +53,7 @@ export async function runIntro(halftone: Halftone | null) {
   gsap.set(heroTargets.header, { autoAlpha: 0 })
 
   // 进度：字体 + 首屏图片（以首屏可见的作品封面为准），带最短时长保证仪式感
-  const count = $('.loader__count')
+  const count = $('.loader__count span')
   const bar = $('.loader__bar span')
   const prog = { v: 0, target: 0 }
   const tick = gsap.to(prog, {
@@ -70,9 +70,8 @@ export async function runIntro(halftone: Halftone | null) {
   gsap.ticker.add(render)
   tick.play()
 
-  const marks = $$('.loader__mark')
-  gsap.fromTo(marks[0], { x: -22, y: 14, rotate: -8 }, { x: 0, y: 0, rotate: 0, duration: 1.8, ease: 'expo.inOut' })
-  gsap.fromTo(marks[1], { x: 18, y: -12, rotate: 6 }, { x: 0, y: 0, rotate: 0, duration: 1.8, ease: 'expo.inOut' })
+  // 启动日志逐行打印
+  gsap.from($$('.loader__log li'), { autoAlpha: 0, x: -12, duration: 0.3, ease: 'power2.out', stagger: 0.28 })
 
   const imgs = $$<HTMLImageElement>('.card__media img').slice(0, 2)
   const fonts = document.fonts ? document.fonts.ready : Promise.resolve()
@@ -96,10 +95,17 @@ export async function runIntro(halftone: Halftone | null) {
   gsap.ticker.remove(render)
   render()
 
-  // 幕布上收 → 字标逐字压印升起
+  // 橙色斜带自左扫过盖住画面 → 整体斜切退场 → 字标逐字升起
+  const band = $('.loader__band', loader)
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
-  tl.to(loader.querySelector('.loader__inner'), { autoAlpha: 0, y: -20, duration: 0.5, ease: 'power2.in' })
-    .to(loader, { clipPath: 'inset(0 0 100% 0)', duration: 1.1, ease: 'expo.inOut' }, '-=0.1')
+  tl.to(loader.querySelector('.loader__inner'), { autoAlpha: 0, x: 40, duration: 0.4, ease: 'power2.in' })
+    .to(band, { clipPath: 'polygon(0% 0%, 120% 0%, 100% 100%, 0% 100%)', duration: 0.6, ease: 'expo.inOut' }, '-=0.2')
+    .set(loader, { background: 'transparent' })
+    .fromTo(
+      loader,
+      { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
+      { clipPath: 'polygon(120% 0%, 100% 0%, 100% 100%, 100% 100%)', duration: 0.9, ease: 'expo.inOut' },
+    )
     .add(() => html.classList.add('is-ready'), '<0.4')
     .to(heroTargets.chars, { yPercent: 0, duration: 1.3, stagger: 0.04 }, '<0.35')
     .to(heroTargets.aside, { yPercent: 0, duration: 1.1, stagger: 0.08 }, '<0.3')

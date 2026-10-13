@@ -1,44 +1,57 @@
-/* PROOF design tokens — see docs/DESIGN_SYSTEM.md
+/* OPERATOR design tokens — see docs/DESIGN_SYSTEM.md
    Raw values are per-theme; semantic --c-* tokens are derived so that
-   `.inverse` blocks can swap ink/paper without circular references. */
+   `.inverse` blocks can swap ground/ink without circular references.
+   Default theme is NIGHT (black · orange); data-theme='light' is DAY (cool white · grey). */
+
+@property --cut {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 12px;
+}
 
 :root {
-  /* Raw · Paper theme */
-  --raw-paper: #eeeae2;
-  --raw-paper-2: #e4dfd4;
-  --raw-ink: #141312;
-  --raw-ink-2: #22201d;
-  --raw-mid: #6e6a63;
-  --raw-mid-inv: #9a948a;
-  --raw-signal: #ff4d1a;
-  --raw-overprint: #2e3bff;
-  color-scheme: light;
+  /* Raw · Night theme (default) */
+  --raw-bg: #0b0b0d;
+  --raw-bg-2: #141417;
+  --raw-bg-3: #1d1d21;
+  --raw-fg: #f4f4f5;
+  --raw-mid: #8a8a93;
+  --raw-inv-bg: #f3f4f6;
+  --raw-inv-bg-2: #e6e7ea;
+  --raw-inv-bg-3: #d9dadf;
+  --raw-inv-fg: #0b0b0d;
+  --raw-inv-mid: #5e5f66;
+  --raw-accent: #ff5b14;
+  --raw-accent-2: #2de2e6;
+  color-scheme: dark;
 
   /* Semantic */
-  --c-paper: var(--raw-paper);
-  --c-paper-2: var(--raw-paper-2);
-  --c-ink: var(--raw-ink);
+  --c-bg: var(--raw-bg);
+  --c-bg-2: var(--raw-bg-2);
+  --c-bg-3: var(--raw-bg-3);
+  --c-fg: var(--raw-fg);
   --c-mid: var(--raw-mid);
-  --c-signal: var(--raw-signal);
-  --c-overprint: var(--raw-overprint);
-  --c-on-signal: #141312;
-  --c-line: color-mix(in srgb, var(--raw-ink) 14%, transparent);
-  --c-line-strong: color-mix(in srgb, var(--raw-ink) 32%, transparent);
+  --c-accent: var(--raw-accent);
+  --c-accent-2: var(--raw-accent-2);
+  --c-on-accent: #0b0b0d;
+  --c-line: color-mix(in srgb, var(--raw-fg) 12%, transparent);
+  --c-line-strong: color-mix(in srgb, var(--raw-fg) 30%, transparent);
 
   /* Type */
-  --f-sans: 'Bricolage Grotesque Variable', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --f-serif: 'Instrument Serif', 'Songti SC', 'Noto Serif SC', Georgia, serif;
-  --f-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --f-display: 'Anybody Variable', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --f-sans: 'Archivo Variable', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --f-hud: 'Chakra Petch', 'PingFang SC', 'Noto Sans SC', ui-monospace, sans-serif;
+  --f-num: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --f-zh: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
 
-  --fs-d1: clamp(3.5rem, 11vw, 13rem);
-  --fs-d2: clamp(2.5rem, 6.4vw, 7rem);
+  --fs-d1: clamp(3.25rem, 10vw, 12rem);
+  --fs-d2: clamp(2.25rem, 5.6vw, 6rem);
   --fs-h1: clamp(2rem, 4vw, 4rem);
-  --fs-h2: clamp(1.5rem, 2.4vw, 2.25rem);
-  --fs-lead: clamp(1.125rem, 1.5vw, 1.5rem);
+  --fs-h2: clamp(1.375rem, 2.2vw, 2rem);
+  --fs-lead: clamp(1.0625rem, 1.4vw, 1.375rem);
   --fs-body: 1rem;
   --fs-small: 0.875rem;
-  --fs-meta: 0.6875rem;
+  --fs-meta: 0.75rem;
 
   /* Spacing · 4pt */
   --s-1: 4px;
@@ -52,7 +65,7 @@
   --s-9: 96px;
   --s-10: 128px;
   --s-11: 192px;
-  --section-y: clamp(96px, 14vw, 224px);
+  --section-y: clamp(96px, 13vw, 208px);
 
   /* Grid · xs */
   --cols: 4;
@@ -60,17 +73,24 @@
   --margin: 16px;
   --header-h: 64px;
 
+  /* Shape */
+  --cut-s: 8px;
+  --cut-m: 16px;
+  --cut-l: 28px;
+
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
-  --d-micro: 200ms;
-  --d-ui: 450ms;
+  --ease-snap: cubic-bezier(0.7, 0, 0.2, 1);
+  --d-micro: 180ms;
+  --d-ui: 420ms;
   --d-reveal: 900ms;
   --d-scene: 1400ms;
 
   --z-canvas: 0;
   --z-content: 1;
   --z-preview: 40;
+  --z-hud: 45;
   --z-header: 50;
   --z-overlay: 60;
   --z-menu: 70;
@@ -103,25 +123,30 @@
   }
 }
 
-/* Darkroom theme */
-:root[data-theme='dark'] {
-  --raw-paper: #0f0e0d;
-  --raw-paper-2: #1a1917;
-  --raw-ink: #eeeae2;
-  --raw-ink-2: #dcd7cc;
-  --raw-mid: #8f897f;
-  --raw-mid-inv: #5d5850;
-  --raw-signal: #ff5a2b;
-  --raw-overprint: #5867ff;
-  color-scheme: dark;
+/* Day theme */
+:root[data-theme='light'] {
+  --raw-bg: #f3f4f6;
+  --raw-bg-2: #e6e7ea;
+  --raw-bg-3: #d9dadf;
+  --raw-fg: #0b0b0d;
+  --raw-mid: #5e5f66;
+  --raw-inv-bg: #0b0b0d;
+  --raw-inv-bg-2: #141417;
+  --raw-inv-bg-3: #1d1d21;
+  --raw-inv-fg: #f4f4f5;
+  --raw-inv-mid: #8a8a93;
+  --raw-accent: #ff5410;
+  --raw-accent-2: #00b8c4;
+  color-scheme: light;
 }
 
-/* Inverse blocks: ink becomes the ground */
+/* Inverse blocks: the other ground */
 .inverse {
-  --c-paper: var(--raw-ink);
-  --c-paper-2: var(--raw-ink-2);
-  --c-ink: var(--raw-paper);
-  --c-mid: var(--raw-mid-inv);
-  --c-line: color-mix(in srgb, var(--raw-paper) 16%, transparent);
-  --c-line-strong: color-mix(in srgb, var(--raw-paper) 36%, transparent);
+  --c-bg: var(--raw-inv-bg);
+  --c-bg-2: var(--raw-inv-bg-2);
+  --c-bg-3: var(--raw-inv-bg-3);
+  --c-fg: var(--raw-inv-fg);
+  --c-mid: var(--raw-inv-mid);
+  --c-line: color-mix(in srgb, var(--raw-inv-fg) 12%, transparent);
+  --c-line-strong: color-mix(in srgb, var(--raw-inv-fg) 30%, transparent);
 }

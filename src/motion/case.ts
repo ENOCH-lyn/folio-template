@@ -11,6 +11,7 @@ export function initCase() {
   const cover = $('.case__cover', root)
   const coverImg = $<HTMLImageElement>('img', cover)
   const body = $('.case__body', root)
+  const band = $('.case__band', root)
   const close = $<HTMLButtonElement>('[data-case-close]', root)
   const html = document.documentElement
   let returnFocus: HTMLElement | null = null
@@ -37,7 +38,7 @@ export function initCase() {
       'button',
       { class: 'case__next', type: 'button', 'data-cursor': 'Next', 'data-next': next.id },
       h('span', { class: 'mono' }, 'Next project →'),
-      h('span', { class: 'case__next-title' }, next.title, ' ', h('em', { class: 'serif' }, `(${next.no})`)),
+      h('span', { class: 'case__next-title' }, next.title, ' ', h('em', { class: 'hl' }, `(${next.no})`)),
     )
     body.replaceChildren(
       h(
@@ -89,6 +90,13 @@ export function initCase() {
       ? `inset(${Math.max(0, r.top)}px ${Math.max(0, vw - r.right)}px ${Math.max(0, ch - r.bottom)}px ${Math.max(0, r.left)}px)`
       : 'inset(100% 0% 0% 0%)'
 
+    // 橙色斜带横扫过场
+    tl.fromTo(
+      band,
+      { clipPath: 'polygon(0% 0%, 0% 0%, -20% 100%, -20% 100%)' },
+      { keyframes: [{ clipPath: 'polygon(0% 0%, 120% 0%, 100% 100%, -20% 100%)', duration: 0.5, ease: 'expo.in' }, { clipPath: 'polygon(120% 0%, 120% 0%, 100% 100%, 100% 100%)', duration: 0.6, ease: 'expo.out' }] },
+      0,
+    )
     tl.fromTo(bg, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.inOut' })
       .fromTo(cover, { clipPath: startClip }, { clipPath: 'inset(0px 0px 0px 0px)', duration: 1.2, ease: 'expo.inOut', clearProps: 'clipPath' }, 0.05)
       .fromTo(coverImg, { scale: 1.2 }, { scale: 1, duration: 1.6 }, 0.1)

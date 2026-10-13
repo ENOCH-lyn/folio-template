@@ -137,10 +137,10 @@ export function initHalftone(canvas: HTMLCanvasElement): Halftone | null {
 
   const refreshTheme = () => {
     const cs = getComputedStyle(document.documentElement)
-    const dark = document.documentElement.dataset.theme === 'dark'
-    gl.uniform3fv(U.paper, hex(cs.getPropertyValue('--raw-paper')))
-    gl.uniform3fv(U.inkA, hex(cs.getPropertyValue('--raw-signal')))
-    gl.uniform3fv(U.inkB, hex(cs.getPropertyValue('--raw-overprint')))
+    const dark = document.documentElement.dataset.theme !== 'light'
+    gl.uniform3fv(U.paper, hex(cs.getPropertyValue('--raw-bg')))
+    gl.uniform3fv(U.inkA, hex(cs.getPropertyValue('--raw-accent')))
+    gl.uniform3fv(U.inkB, hex(cs.getPropertyValue(dark ? '--raw-accent-2' : '--raw-fg')))
     gl.uniform1f(U.screen, dark ? 1 : 0)
     if (reducedMotion) draw(0)
   }

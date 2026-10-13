@@ -9,6 +9,12 @@ type ImageSize = 'square_hd' | 'square' | 'portrait_4_3' | 'portrait_16_9' | 'la
 const img = (prompt: string, size: ImageSize) =>
   `https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=${encodeURIComponent(prompt)}&image_size=${size}`
 
+/** 统一画风后缀：保证占位图整体是同一套二次元主视觉语言 */
+const STYLE = 'anime key visual, cel shading, official game art, crisp linework, high contrast, orange and black color scheme, cinematic lighting, highly detailed'
+const art = (subject: string, size: ImageSize) => img(`${subject}, ${STYLE}`, size)
+
+export type Rank = 'SSR' | 'SR' | 'R'
+
 export type Project = {
   id: string
   no: string
@@ -20,6 +26,8 @@ export type Project = {
   role: string
   tools: string[]
   summary: string
+  /** 卡面稀有度，仅作视觉装饰 */
+  rank: Rank
   cover: string
   ratio: 'landscape' | 'portrait' | 'square' | 'wide'
   layout: 'a' | 'b' | 'c' | 'd' | 'e' | 'f'
@@ -29,6 +37,8 @@ export type Project = {
 export const site = {
   name: 'Your Name',
   initials: 'YN',
+  /** 代号：出现在 HUD 与档案编号中 */
+  codename: 'OPERATOR-01',
   role: 'Visual Designer',
   roleZh: '视觉设计师',
   city: '[City]',
@@ -36,214 +46,235 @@ export const site = {
   timezone: 'UTC',
   timezoneLabel: 'UTC',
   email: 'hello@example.com',
-  availability: 'Available — Q1 2027',
+  availability: 'Online — open for Q1 2027',
   yearRange: '2019—2026',
   wordmark: ['Visual', 'Designer'],
+  /** 字标右侧的竖排中文 */
+  wordmarkZh: '视觉设计',
   intro:
-    'Independent visual designer crafting identities, editorial systems and motion languages for culture-driven brands. This is placeholder copy — replace it in src/content.ts.',
-  introZh: '独立视觉设计师，专注品牌识别、编辑设计与动态语言。（占位文案）',
+    'Visual designer building key visuals, game UI and character-driven identities for games, anime and youth-culture brands. Placeholder copy — replace it in src/content.ts.',
+  introZh: '视觉设计师，专注游戏 / 二次元方向的主视觉、界面与角色视觉。（占位文案）',
   socials: [
-    { label: 'Instagram', href: '#' },
+    { label: 'Bilibili', href: '#' },
+    { label: 'X / Twitter', href: '#' },
+    { label: 'Pixiv', href: '#' },
+    { label: 'ArtStation', href: '#' },
     { label: 'Behance', href: '#' },
-    { label: 'Dribbble', href: '#' },
-    { label: 'LinkedIn', href: '#' },
-    { label: 'Are.na', href: '#' },
   ],
 }
 
-export const marquee = ['Brand Identity', 'Editorial', 'Motion', 'Type Design', 'Packaging', 'Exhibition', 'Art Direction']
+export const marquee = ['Key Visual', 'Game UI', 'Character Design', 'Motion Graphics', 'Brand Identity', 'Illustration', 'Event Visual']
 
-/** Manifesto: string = 单词，{ img } = 行内图片胶囊 */
+/** Manifesto: string = 单词，{ img } = 行内图片切片；以 * 开头的词高亮为强调色 */
 export const manifesto: (string | { img: string; alt: string })[] = [
-  'I', 'design', 'systems', 'that', 'feel', 'inevitable', '—',
-  { img: img('close up of bold black typography printed on textured warm paper, letterpress, macro photography', 'landscape_4_3'), alt: 'Typography detail' },
-  'identities,', 'editorial', 'grids', 'and', 'moving', 'type',
-  { img: img('abstract fluorescent orange gradient shape on beige background, minimal 3d render, soft light', 'landscape_4_3'), alt: 'Abstract form' },
-  'that', 'give', 'ideas', 'a', 'shape,', 'a', 'rhythm', 'and', 'a', 'voice', 'worth', 'remembering.',
+  'I', 'design', '*worlds', 'people', 'want', 'to', 'step', 'into', '—',
+  { img: art('close up of a glowing orange hud interface overlay on a dark screen, sci-fi typography', 'landscape_4_3'), alt: 'HUD detail' },
+  'key', 'visuals,', 'interfaces', 'and', 'characters', 'with',
+  { img: art('anime girl silhouette with headphones looking at neon city skyline at night', 'landscape_4_3'), alt: 'Character silhouette' },
+  'a', 'rhythm,', 'a', 'signal', 'and', 'a', '*story', 'worth', 'playing.',
 ]
 
 export const projects: Project[] = [
   {
-    id: 'halcyon',
+    id: 'neon-protocol',
     no: '01',
-    title: 'Halcyon',
-    titleZh: '品牌识别系统',
-    discipline: 'Brand Identity',
+    title: 'Neon Protocol',
+    titleZh: '游戏主视觉',
+    discipline: 'Key Visual',
     client: 'Client A',
     year: '2026',
-    role: 'Creative Direction, Identity, Guidelines',
-    tools: ['Figma', 'Illustrator', 'Glyphs'],
+    role: 'Art Direction, Key Visual, Logo',
+    tools: ['Photoshop', 'Clip Studio', 'After Effects'],
     summary:
-      'A modular identity built on a single variable glyph that adapts across packaging, signage and digital touchpoints. Placeholder description for your case study.',
-    cover: img('minimalist brand identity mockup, business cards and letterhead on warm grey paper, fluorescent orange accent, overhead studio shot, soft shadows, high detail', 'landscape_4_3'),
+      'A launch key visual and logo system for a near-future action game — one hero pose, five layout crops, built to survive every store banner. Placeholder description for your case study.',
+    rank: 'SSR',
+    cover: art('anime heroine with mechanical arm standing on rooftop of neon cyberpunk city at night, dynamic low angle', 'landscape_4_3'),
     ratio: 'landscape',
     layout: 'a',
     gallery: [
-      img('brand guidelines book open on concrete table, swiss grid layout pages, black and orange, natural window light', 'landscape_16_9'),
-      img('tote bag and stickers with bold geometric logo, black and fluorescent orange, flat lay on beige paper', 'square_hd'),
+      art('wide game launch banner layout with anime characters, bold title logo, futuristic city background', 'landscape_16_9'),
+      art('anime character close up portrait with orange rim light and holographic hud elements', 'square_hd'),
     ],
   },
   {
-    id: 'north-archive',
+    id: 'starfall',
     no: '02',
-    title: 'North Archive',
-    titleZh: '出版与编辑设计',
-    discipline: 'Editorial Design',
+    title: 'Starfall Unit',
+    titleZh: '角色视觉设计',
+    discipline: 'Character Design',
     client: 'Client B',
     year: '2025',
-    role: 'Art Direction, Layout, Typesetting',
-    tools: ['InDesign', 'Photoshop'],
+    role: 'Character Sheet, Costume, Palette',
+    tools: ['Clip Studio', 'Photoshop'],
     summary:
-      'A 320-page archival publication with a rigorous 12-column grid and expressive typographic openers. Placeholder description for your case study.',
-    cover: img('editorial magazine spread with bold swiss typography and large black and white photograph, open book on light grey surface, overhead', 'portrait_4_3'),
+      'Six playable characters designed as one squad — shared silhouette rules, a strict palette and a costume language that reads at thumbnail size. Placeholder description for your case study.',
+    rank: 'SR',
+    cover: art('full body anime character design sheet, girl in tactical jacket with orange accents, turnaround poses, white background', 'portrait_4_3'),
     ratio: 'portrait',
     layout: 'b',
     gallery: [
-      img('stack of art books with minimal typographic covers, off-white and black, studio photography, soft daylight', 'landscape_4_3'),
-      img('close up of book binding and paper edges, editorial design detail, warm tones, macro', 'portrait_4_3'),
+      art('lineup of six anime characters in matching tactical uniforms, character select screen', 'landscape_4_3'),
+      art('anime costume detail sheet, jacket patches, boots, color swatches', 'portrait_4_3'),
     ],
   },
   {
-    id: 'kinetic',
+    id: 'hud-07',
     no: '03',
-    title: 'Kinetic Type Lab',
-    titleZh: '动态字体实验',
-    discipline: 'Motion & Type',
+    title: 'HUD//07',
+    titleZh: '游戏界面设计',
+    discipline: 'Game UI',
     client: 'Self-initiated',
     year: '2025',
-    role: 'Concept, Motion, Type Design',
-    tools: ['After Effects', 'Glyphs', 'TouchDesigner'],
+    role: 'UI Design, Motion, Design System',
+    tools: ['Figma', 'After Effects', 'Unity'],
     summary:
-      'An ongoing study of variable fonts in motion — letterforms that stretch, breathe and respond to sound. Placeholder description for your case study.',
-    cover: img('abstract 3d kinetic typography, stretched chrome letters on beige background, motion blur, soft studio lighting, minimal', 'portrait_4_3'),
+      'A tactical HUD and menu system explored as a design-system exercise: chamfers, scanlines, a 4pt grid and 40 animated components. Placeholder description for your case study.',
+    rank: 'SSR',
+    cover: art('futuristic game menu ui screen, character portrait on right, orange hud panels, black background', 'portrait_4_3'),
     ratio: 'portrait',
     layout: 'c',
     gallery: [
-      img('large led screen showing bold animated black typography in white gallery space, people silhouettes, architectural photography', 'landscape_16_9'),
-      img('sequence of distorted letterforms printed as posters, black on white, grid arrangement, studio photo', 'square_hd'),
+      art('game inventory interface with item cards, rarity stars, orange and black tactical ui', 'landscape_16_9'),
+      art('game ui component sheet, buttons, progress bars, icons, orange accent on dark', 'square_hd'),
     ],
   },
   {
-    id: 'meridian',
+    id: 'afterglow',
     no: '04',
-    title: 'Meridian',
-    titleZh: '展览与导视',
-    discipline: 'Exhibition & Wayfinding',
+    title: 'Afterglow Fest',
+    titleZh: '活动视觉与导视',
+    discipline: 'Event Visual',
     client: 'Client C',
     year: '2024',
-    role: 'Spatial Graphics, Signage System',
+    role: 'Event Identity, Signage, Merch',
     tools: ['Illustrator', 'Cinema 4D'],
     summary:
-      'Wayfinding and exhibition graphics for a contemporary art space, using oversized numerals as spatial anchors. Placeholder description for your case study.',
-    cover: img('exhibition wayfinding signage in white contemporary gallery, oversized black numerals on wall, architectural photography, clean light', 'landscape_4_3'),
+      'Visual identity and on-site wayfinding for an anime & game convention — giant numerals, hazard-tape banners and an animated stage loop. Placeholder description for your case study.',
+    rank: 'SR',
+    cover: art('anime convention stage with huge led screen showing character art, crowd silhouettes, orange stage lights', 'landscape_4_3'),
     ratio: 'landscape',
     layout: 'd',
     gallery: [
-      img('gallery entrance with large vinyl typography on glass wall, fluorescent orange accents, architectural photography', 'landscape_4_3'),
-      img('directional signage detail with arrows and numbers, black and white, minimal, close up', 'portrait_4_3'),
+      art('event wayfinding banners with bold numbers and hazard stripes in a convention hall', 'landscape_4_3'),
+      art('anime event merch, acrylic stands, badges and tote bags on a black table', 'portrait_4_3'),
     ],
   },
   {
-    id: 'monolith',
+    id: 'ripple',
     no: '05',
-    title: 'Monolith',
-    titleZh: '包装设计',
-    discipline: 'Packaging',
+    title: 'Ripple Records',
+    titleZh: '品牌与周边',
+    discipline: 'Brand & Merch',
     client: 'Client D',
     year: '2023',
-    role: 'Packaging, Illustration, Print Production',
+    role: 'Identity, Album Art, Packaging',
     tools: ['Illustrator', 'Blender', 'Photoshop'],
     summary:
-      'A monochrome packaging family where each product is distinguished only by a fluorescent band and typographic scale. Placeholder description for your case study.',
-    cover: img('premium minimalist packaging boxes, matte black and off-white with fluorescent orange labels, studio product photography, hard shadows, wide shot', 'landscape_16_9'),
+      'A virtual-idol music label: a modular logo, album covers drawn as one continuous panorama, and limited-run vinyl packaging. Placeholder description for your case study.',
+    rank: 'R',
+    cover: art('panoramic anime illustration of virtual idol singer on stage, vinyl record packaging mockup, wide shot', 'landscape_16_9'),
     ratio: 'wide',
     layout: 'e',
     gallery: [
-      img('minimal cosmetic bottles with bold typography labels, beige background, soft studio light, product photography', 'square_hd'),
-      img('packaging dieline and printed proofs on designer desk, overhead, warm light', 'landscape_4_3'),
+      art('album cover series with anime idol characters, consistent typography layout', 'square_hd'),
+      art('vinyl record and cd packaging with anime artwork, studio product shot', 'landscape_4_3'),
     ],
   },
   {
-    id: 'overprint',
+    id: 'glitch-bloom',
     no: '06',
-    title: 'Overprint',
-    titleZh: '海报与印刷实验',
-    discipline: 'Print & Poster',
+    title: 'Glitch Bloom',
+    titleZh: '动态海报实验',
+    discipline: 'Motion & Poster',
     client: 'Client E',
     year: '2022',
-    role: 'Poster Series, Risograph Printing',
-    tools: ['Risograph', 'Illustrator', 'p5.js'],
+    role: 'Poster Series, Motion, Creative Code',
+    tools: ['After Effects', 'TouchDesigner', 'p5.js'],
     summary:
-      'A series of two-colour risograph posters exploring misregistration as a deliberate graphic language. Placeholder description for your case study.',
-    cover: img('risograph printed posters pinned on white wall, halftone texture, fluorescent orange and blue inks, overprint, editorial photography', 'square_hd'),
+      'Twelve animated posters where anime portraits are torn apart by RGB-split glitches and rebuilt as halftone dots. Placeholder description for your case study.',
+    rank: 'SR',
+    cover: art('glitch art anime portrait poster, rgb split, halftone dots, bold japanese style typography layout', 'square_hd'),
     ratio: 'square',
     layout: 'f',
     gallery: [
-      img('risograph printer machine in design studio with stacks of colorful prints, soft daylight, documentary photography', 'landscape_4_3'),
-      img('macro detail of risograph halftone dots blue and orange overprint on paper', 'square_hd'),
+      art('grid of animated glitch posters with anime faces on a dark wall', 'landscape_4_3'),
+      art('macro detail of halftone dots and rgb split glitch on anime illustration', 'square_hd'),
     ],
   },
 ]
 
 export const about = {
-  portrait: img('silhouette of a designer working at a desk in a sunlit studio, backlit, face not visible, film grain, warm muted tones, editorial photography', 'portrait_4_3'),
-  heading: 'Form follows feeling.',
-  headingZh: '形式追随感受',
+  portrait: art('anime style portrait of a designer from behind wearing headphones at a glowing monitor, face not visible, dark room', 'portrait_4_3'),
+  heading: 'Operator Profile',
+  headingZh: '干员档案',
+  /** 档案卡上的等级/阵营等装饰字段 */
+  level: 'LV.80',
+  faction: 'Independent Studio',
   body: [
-    'Placeholder bio — I am a visual designer working at the intersection of typography, systems and motion. I partner with studios, cultural institutions and founders to build visual languages that scale without losing their soul.',
-    'Before going independent I spent several years in studio environments leading identity and editorial projects. Replace this paragraph with your own story.',
+    'Placeholder bio — I am a visual designer working where illustration, interface and motion meet. I help game studios, anime IPs and youth-culture brands build visual worlds that feel alive the moment you press start.',
+    'Before going independent I spent several years in game and agency teams leading key visual and UI projects. Replace this paragraph with your own story.',
   ],
   stats: [
-    { value: 8, suffix: '+', label: 'Years of practice', zh: '从业年限' },
-    { value: 120, suffix: '+', label: 'Projects shipped', zh: '完成项目' },
-    { value: 14, suffix: '', label: 'Awards & mentions', zh: '奖项与提名' },
-    { value: 6, suffix: '', label: 'Countries', zh: '合作国家' },
+    { value: 8, suffix: '+', label: 'Years in play', zh: '从业年限' },
+    { value: 120, suffix: '+', label: 'Missions cleared', zh: '完成项目' },
+    { value: 14, suffix: '', label: 'Achievements', zh: '奖项与提名' },
+    { value: 6, suffix: '', label: 'Regions', zh: '合作地区' },
+  ],
+  /** 能力雷达：0–1，建议 5–8 项 */
+  radar: [
+    { label: 'Key Visual', zh: '主视觉', value: 0.94 },
+    { label: 'Game UI', zh: '界面', value: 0.88 },
+    { label: 'Character', zh: '角色', value: 0.76 },
+    { label: 'Motion', zh: '动态', value: 0.84 },
+    { label: 'Brand', zh: '品牌', value: 0.7 },
+    { label: '3D', zh: '三维', value: 0.58 },
   ],
 }
 
 export const capabilities = [
-  { name: 'Brand Identity', zh: '品牌识别', desc: 'Strategy-led logo systems, typography, colour and guidelines that hold up across every touchpoint.', tags: ['Naming', 'Logo', 'Guidelines'] },
-  { name: 'Editorial & Print', zh: '编辑与印刷', desc: 'Books, magazines and printed matter built on rigorous grids and expressive typesetting.', tags: ['Books', 'Grids', 'Production'] },
-  { name: 'Motion & Kinetic Type', zh: '动态与字体动画', desc: 'Motion principles and animated type systems that give brands a recognisable rhythm.', tags: ['Motion system', 'Title design'] },
-  { name: 'Digital Product', zh: '数字产品视觉', desc: 'Interface art direction and design systems translating identity into product.', tags: ['UI', 'Design tokens'] },
-  { name: 'Packaging', zh: '包装设计', desc: 'Structural and graphic packaging from concept to press check.', tags: ['Dielines', 'Print finishing'] },
-  { name: 'Exhibition & Wayfinding', zh: '展览与导视', desc: 'Spatial graphics and signage that guide, inform and delight.', tags: ['Signage', 'Spatial'] },
+  { name: 'Key Visual & Illustration', zh: '主视觉与插画', desc: 'Launch art, event visuals and banners with one strong idea that survives every crop.', tags: ['KV', 'Banner', 'Layout'] },
+  { name: 'Game UI / HUD', zh: '游戏界面', desc: 'Menus, HUDs and design systems that feel like part of the world, not on top of it.', tags: ['HUD', 'Menu', 'System'] },
+  { name: 'Character & IP', zh: '角色与 IP', desc: 'Character sheets, costume language and palettes that read at thumbnail size.', tags: ['Sheet', 'Costume'] },
+  { name: 'Motion & Live2D', zh: '动态与 Live2D', desc: 'Title sequences, UI motion and rigged illustrations with a recognisable rhythm.', tags: ['Motion', 'Rigging'] },
+  { name: 'Brand & Merch', zh: '品牌与周边', desc: 'Logos, packaging and merchandise for labels, idols and fan communities.', tags: ['Logo', 'Merch'] },
+  { name: 'Event & Exhibition', zh: '活动与展陈', desc: 'Convention booths, stage screens and wayfinding that guide a crowd.', tags: ['Booth', 'Signage'] },
 ]
 
-/** 工具色卡：swatch 取自设计系统色板 */
-export const tools: { name: string; code: string; use: string; level: number; swatch: 'ink' | 'signal' | 'overprint' | 'paper' | 'mid' }[] = [
-  { name: 'Figma', code: 'TL 001 C', use: 'Interface · Systems', level: 5, swatch: 'ink' },
-  { name: 'Illustrator', code: 'TL 002 C', use: 'Vector · Identity', level: 5, swatch: 'signal' },
-  { name: 'InDesign', code: 'TL 003 C', use: 'Editorial · Layout', level: 5, swatch: 'mid' },
-  { name: 'Photoshop', code: 'TL 004 C', use: 'Image · Retouch', level: 4, swatch: 'paper' },
-  { name: 'After Effects', code: 'TL 005 C', use: 'Motion · Type', level: 4, swatch: 'overprint' },
-  { name: 'Cinema 4D', code: 'TL 006 C', use: '3D · Render', level: 3, swatch: 'ink' },
-  { name: 'Blender', code: 'TL 007 C', use: '3D · Product', level: 3, swatch: 'mid' },
-  { name: 'Glyphs', code: 'TL 008 C', use: 'Type Design', level: 4, swatch: 'signal' },
-  { name: 'TouchDesigner', code: 'TL 009 C', use: 'Generative', level: 3, swatch: 'paper' },
-  { name: 'p5.js', code: 'TL 010 C', use: 'Creative Code', level: 3, swatch: 'overprint' },
-  { name: 'Spline', code: 'TL 011 C', use: 'Web 3D', level: 3, swatch: 'ink' },
-  { name: 'Risograph', code: 'TL 012 C', use: 'Print · Craft', level: 4, swatch: 'signal' },
+/** 装备卡：swatch 取自设计系统色板 */
+export type Swatch = 'accent' | 'cyan' | 'white' | 'steel' | 'black'
+export const tools: { name: string; code: string; use: string; level: number; swatch: Swatch }[] = [
+  { name: 'Photoshop', code: 'EQ 001', use: 'Paint · Composite', level: 5, swatch: 'accent' },
+  { name: 'Clip Studio', code: 'EQ 002', use: 'Illustration', level: 5, swatch: 'white' },
+  { name: 'Figma', code: 'EQ 003', use: 'UI · Systems', level: 5, swatch: 'steel' },
+  { name: 'Illustrator', code: 'EQ 004', use: 'Vector · Logo', level: 4, swatch: 'black' },
+  { name: 'After Effects', code: 'EQ 005', use: 'Motion · Title', level: 4, swatch: 'cyan' },
+  { name: 'Live2D', code: 'EQ 006', use: 'Rigging', level: 3, swatch: 'accent' },
+  { name: 'Blender', code: 'EQ 007', use: '3D · Scene', level: 3, swatch: 'steel' },
+  { name: 'Cinema 4D', code: 'EQ 008', use: '3D · Render', level: 3, swatch: 'white' },
+  { name: 'Spine', code: 'EQ 009', use: '2D Animation', level: 3, swatch: 'black' },
+  { name: 'Unity', code: 'EQ 010', use: 'UI Implement', level: 2, swatch: 'cyan' },
+  { name: 'TouchDesigner', code: 'EQ 011', use: 'Generative', level: 3, swatch: 'accent' },
+  { name: 'Procreate', code: 'EQ 012', use: 'Sketch', level: 4, swatch: 'steel' },
 ]
 
 export const process = [
-  { no: '01', name: 'Listen', zh: '倾听', desc: 'Workshops, research and audits to find the tension worth designing for.', out: ['Research', 'Brief', 'Moodboard'] },
-  { no: '02', name: 'Frame', zh: '定义', desc: 'A clear creative territory — principles, references and a single sharp idea.', out: ['Concept', 'Principles'] },
-  { no: '03', name: 'Make', zh: '创作', desc: 'Rapid iteration across type, colour, image and motion until the system clicks.', out: ['Identity', 'Prototypes'] },
-  { no: '04', name: 'Refine', zh: '打磨', desc: 'Obsessive detailing, guidelines and handover so the work keeps its integrity.', out: ['Guidelines', 'Assets', 'Support'] },
+  { no: '01', name: 'Scout', zh: '调研', desc: 'Worldview, references and player research to find what the visuals must carry.', out: ['Research', 'Brief', 'Moodboard'] },
+  { no: '02', name: 'Concept', zh: '概念', desc: 'A clear visual territory — silhouette rules, palette and one sharp idea.', out: ['Concept', 'Rules'] },
+  { no: '03', name: 'Craft', zh: '制作', desc: 'Rapid iteration across art, UI and motion until the system clicks.', out: ['Key Visual', 'UI Kit'] },
+  { no: '04', name: 'Launch', zh: '交付', desc: 'Polish, guidelines and asset handover so the world stays consistent.', out: ['Guidelines', 'Assets', 'Support'] },
 ]
 
 export const experience = [
   { period: '2023 — Now', role: 'Independent Visual Designer', place: 'Self-employed', zh: '独立设计师' },
-  { period: '2020 — 2023', role: 'Senior Visual Designer', place: 'Studio Name', zh: '高级视觉设计师' },
-  { period: '2018 — 2020', role: 'Visual Designer', place: 'Agency Name', zh: '视觉设计师' },
+  { period: '2020 — 2023', role: 'Senior Visual Designer', place: 'Game Studio Name', zh: '高级视觉设计师' },
+  { period: '2018 — 2020', role: 'UI / Visual Designer', place: 'Agency Name', zh: '界面与视觉设计师' },
   { period: '2014 — 2018', role: 'BFA, Visual Communication', place: 'University Name', zh: '视觉传达 学士' },
 ]
 
 export const awards = [
-  { year: '2026', name: 'Award Name', cat: 'Brand Identity — Gold' },
-  { year: '2025', name: 'Award Name', cat: 'Editorial Design — Shortlist' },
-  { year: '2024', name: 'Award Name', cat: 'Typography — Merit' },
-  { year: '2023', name: 'Award Name', cat: 'Packaging — Silver' },
-  { year: '2022', name: 'Award Name', cat: 'Poster — Selected' },
+  { year: '2026', name: 'Award Name', cat: 'Key Visual — Gold' },
+  { year: '2025', name: 'Award Name', cat: 'Game UI — Shortlist' },
+  { year: '2024', name: 'Award Name', cat: 'Character — Merit' },
+  { year: '2023', name: 'Award Name', cat: 'Event Visual — Silver' },
+  { year: '2022', name: 'Award Name', cat: 'Motion Poster — Selected' },
 ]

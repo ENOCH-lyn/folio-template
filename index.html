@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Your Name — Visual Designer · Portfolio Template</title>
     <meta name="description" content="A portfolio template for visual designers. All content is placeholder." />
-    <meta name="theme-color" content="#eeeae2" />
+    <meta name="theme-color" content="#0b0b0d" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script>
       // 在首帧前恢复主题，避免闪烁
       try {
-        const t = localStorage.getItem('proof-theme')
+        const t = localStorage.getItem('operator-theme')
         if (t) document.documentElement.dataset.theme = t
       } catch (e) {}
       document.documentElement.classList.add('js')
@@ -19,28 +19,25 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Loader · Registration -->
+    <!-- Loader · Boot sequence -->
     <div class="loader" aria-hidden="true">
       <div class="loader__inner">
-        <svg class="loader__mark" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="60" cy="60" r="34" />
-          <circle cx="60" cy="60" r="18" />
-          <path d="M60 4v112M4 60h112" />
-        </svg>
-        <svg class="loader__mark loader__mark--b" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="60" cy="60" r="34" />
-          <circle cx="60" cy="60" r="18" />
-          <path d="M60 4v112M4 60h112" />
-        </svg>
-        <div class="loader__meta">
-          <span>Proofing</span>
-          <span class="loader__count">000</span>
-        </div>
+        <div class="loader__head mono"><span>Operator.sys</span><span>v2.0.26</span></div>
+        <ol class="loader__log mono">
+          <li>&gt; Boot sequence initiated</li>
+          <li>&gt; Mounting visual core ........ OK</li>
+          <li>&gt; Syncing operator profile ... OK</li>
+          <li>&gt; Loading key visuals</li>
+        </ol>
+        <div class="loader__count"><span>000</span><small>%</small></div>
         <div class="loader__bar"><span></span></div>
+        <p class="loader__tips mono"><b>Tips</b> Press <kbd>G</kbd> any time to reveal the layout grid.</p>
       </div>
+      <div class="loader__band"></div>
     </div>
 
     <!-- Overlays -->
+    <div class="scanlines" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
     <div class="grid-overlay" aria-hidden="true">
       <div class="grid-overlay__cols"></div>
@@ -62,11 +59,11 @@
         </span>
       </a>
       <nav class="header__nav" aria-label="Primary">
-        <a href="#work" data-nav>Work</a>
-        <a href="#about" data-nav>About</a>
-        <a href="#toolkit" data-nav>Toolkit</a>
-        <a href="#process" data-nav>Process</a>
-        <a href="#contact" data-nav>Contact</a>
+        <a href="#work" data-nav data-decode-hover><small>01</small>Works</a>
+        <a href="#about" data-nav data-decode-hover><small>02</small>Profile</a>
+        <a href="#toolkit" data-nav data-decode-hover><small>04</small>Gear</a>
+        <a href="#process" data-nav data-decode-hover><small>05</small>Flow</a>
+        <a href="#contact" data-nav data-decode-hover><small>07</small>Contact</a>
       </nav>
       <div class="header__tools">
         <span class="header__status mono"><i class="dot"></i><span data-site="availability"></span></span>
@@ -74,7 +71,7 @@
         <button class="icon-btn" type="button" data-grid-toggle aria-pressed="false" aria-label="Toggle layout grid (G)" data-cursor="Grid">
           <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2v16M10 2v16M15 2v16" /></svg>
         </button>
-        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle darkroom theme" data-cursor="Theme">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle day theme" data-cursor="Theme">
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" /><path d="M10 3a7 7 0 0 1 0 14z" class="fill" /></svg>
         </button>
         <button class="menu-btn" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu">
@@ -83,44 +80,54 @@
       </div>
     </header>
 
-    <div class="menu inverse" id="menu" aria-hidden="true">
+    <div class="menu" id="menu" aria-hidden="true">
       <nav class="menu__nav" aria-label="Mobile">
-        <a href="#work"><span class="mono">01</span>Work</a>
-        <a href="#about"><span class="mono">02</span>About</a>
-        <a href="#toolkit"><span class="mono">03</span>Toolkit</a>
-        <a href="#process"><span class="mono">04</span>Process</a>
-        <a href="#contact"><span class="mono">05</span>Contact</a>
+        <a href="#work"><span class="mono">01</span>Works</a>
+        <a href="#about"><span class="mono">02</span>Profile</a>
+        <a href="#toolkit"><span class="mono">04</span>Gear</a>
+        <a href="#process"><span class="mono">05</span>Flow</a>
+        <a href="#contact"><span class="mono">07</span>Contact</a>
       </nav>
       <div class="menu__foot mono"><span data-site="email"></span><span data-site="city"></span></div>
     </div>
 
-    <!-- Folio · page indicator -->
+    <!-- HUD · section indicator + sync -->
     <div class="folio mono" aria-hidden="true">
-      <span class="folio__no">[00]</span>
-      <span class="folio__name">Index</span>
+      <span class="folio__no">00</span>
+      <span class="folio__name">Title</span>
     </div>
-    <div class="progress mono" aria-hidden="true"><span class="progress__val">000</span>%</div>
+    <div class="progress mono" aria-hidden="true">
+      <span class="progress__label">Sync</span>
+      <span class="progress__track"><i></i></span>
+      <span><span class="progress__val">000</span>%</span>
+    </div>
 
     <main id="main">
-      <!-- Hero -->
+      <!-- Hero · title screen -->
       <section class="hero" id="top" aria-label="Introduction">
         <canvas class="hero__canvas" aria-hidden="true"></canvas>
+        <div class="hero__frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="hero__scan" aria-hidden="true"></div>
+        <p class="hero__rail mono" aria-hidden="true">Operator file // Portfolio <span data-site="yearRange"></span> // All content is placeholder</p>
         <div class="hero__meta mono">
-          <span class="hero__meta-a">(Portfolio)<br /><span data-site="yearRange"></span></span>
-          <span class="hero__meta-b">Identity, editorial<br />&amp; motion systems</span>
-          <span class="hero__meta-c">Based in <span data-site="city"></span><br />Working worldwide</span>
-          <span class="hero__meta-d">Index<br />(01—06)</span>
+          <span class="hero__meta-a" data-decode><b>ID</b> <span data-site="codename"></span></span>
+          <span class="hero__meta-b" data-decode><b>Class</b> KV · UI · Character</span>
+          <span class="hero__meta-c" data-decode><b>Base</b> <span data-site="city"></span></span>
+          <span class="hero__meta-d" data-decode><b>Files</b> 06 Unlocked</span>
         </div>
         <h1 class="wordmark" aria-label="">
           <span class="wordmark__line" data-line="0"></span>
-          <span class="wordmark__aside serif"><span>&amp; art</span><span>direction</span></span>
+          <span class="wordmark__aside"><span class="mono">Class // SSR</span><span class="wordmark__zh" data-site="wordmarkZh"></span></span>
           <span class="wordmark__line" data-line="1"></span>
         </h1>
         <div class="hero__foot">
           <p class="hero__intro" data-site="intro"></p>
           <p class="hero__intro-zh zh" data-site="introZh"></p>
           <div class="hero__aside">
-            <p class="hero__hint mono" aria-hidden="true">Move to lift the ink<br />Press <kbd>G</kbd> for grid</p>
+            <a class="hero__start" href="#work" data-cursor="Start">
+              <span class="hero__start-icon" aria-hidden="true"></span>
+              <span class="hero__start-text">Press start<small>进入作品</small></span>
+            </a>
             <a class="hero__scroll mono" href="#work" data-cursor="Scroll">
               <span class="hero__scroll-line"></span>Scroll to explore
             </a>
@@ -128,28 +135,31 @@
         </div>
       </section>
 
-      <!-- Marquee -->
-      <div class="marquee inverse" aria-hidden="true">
-        <div class="marquee__track"></div>
+      <!-- Marquee · hazard tape -->
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__tape marquee__tape--back"></div>
+        <div class="marquee__tape">
+          <div class="marquee__track"></div>
+        </div>
       </div>
 
       <!-- Manifesto -->
       <section class="manifesto wrap" aria-label="Manifesto">
-        <p class="manifesto__label mono">(Statement)</p>
+        <p class="manifesto__label mono" data-decode>// Statement</p>
         <p class="manifesto__text"></p>
       </section>
 
       <!-- Work -->
-      <section class="section work" id="work" aria-labelledby="work-title" data-folio="01" data-folio-name="Work">
-        <header class="section-head wrap">
+      <section class="section work" id="work" aria-labelledby="work-title" data-folio="01" data-folio-name="Works">
+        <header class="section-head wrap" data-ghost="Works">
           <span class="section-head__rule"></span>
-          <span class="section-head__no mono">(01)</span>
-          <h2 class="section-head__title" id="work-title">Selected <em class="serif">work</em></h2>
+          <span class="section-head__no mono" data-decode><b>01</b>Stage select</span>
+          <h2 class="section-head__title" id="work-title">Selected <em class="hl">works</em></h2>
           <span class="section-head__zh zh">精选作品</span>
           <div class="section-head__aside">
             <div class="view-toggle mono" role="group" aria-label="Layout">
-              <button type="button" data-view="grid" aria-pressed="true" data-cursor="Grid">Grid</button>
-              <button type="button" data-view="index" aria-pressed="false" data-cursor="Index">Index</button>
+              <button type="button" data-view="grid" aria-pressed="true" data-cursor="Grid">Cards</button>
+              <button type="button" data-view="index" aria-pressed="false" data-cursor="Index">List</button>
               <span class="view-toggle__thumb"></span>
             </div>
             <span class="mono section-head__count" data-count-projects></span>
@@ -159,40 +169,50 @@
       </section>
 
       <!-- About -->
-      <section class="section about wrap" id="about" aria-labelledby="about-title" data-folio="02" data-folio-name="About">
-        <header class="section-head">
+      <section class="section about wrap" id="about" aria-labelledby="about-title" data-folio="02" data-folio-name="Profile">
+        <header class="section-head" data-ghost="Profile">
           <span class="section-head__rule"></span>
-          <span class="section-head__no mono">(02)</span>
+          <span class="section-head__no mono" data-decode><b>02</b>Operator file</span>
           <h2 class="section-head__title" id="about-title" data-about="heading"></h2>
           <span class="section-head__zh zh" data-about="headingZh"></span>
         </header>
         <div class="about__grid">
-          <figure class="about__portrait" data-reveal="develop">
-            <div class="media"><img alt="Placeholder portrait" data-about="portrait" loading="lazy" decoding="async" /></div>
-            <figcaption class="mono">Fig. 01 — Studio, <span data-site="city"></span></figcaption>
+          <figure class="about__portrait">
+            <div class="about__card">
+              <div class="media"><img alt="Placeholder portrait" data-about="portrait" loading="lazy" decoding="async" /></div>
+              <span class="about__lv" data-about="level"></span>
+              <span class="about__stars" aria-hidden="true">★★★★★★</span>
+              <div class="about__plate">
+                <b data-site="name"></b>
+                <span class="mono"><span data-site="codename"></span> · <span data-about="faction"></span></span>
+              </div>
+              <div class="about__brackets" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            </div>
+            <figcaption class="mono">Fig. 01 — Placeholder portrait, <span data-site="city"></span></figcaption>
           </figure>
           <div class="about__body" data-about="body"></div>
+          <div class="about__radar" data-radar></div>
           <dl class="about__stats" data-about="stats"></dl>
         </div>
       </section>
 
       <!-- Capabilities -->
-      <section class="section caps wrap" id="capabilities" aria-labelledby="caps-title" data-folio="03" data-folio-name="Capabilities">
-        <header class="section-head">
+      <section class="section caps wrap" id="capabilities" aria-labelledby="caps-title" data-folio="03" data-folio-name="Skills">
+        <header class="section-head" data-ghost="Skills">
           <span class="section-head__rule"></span>
-          <span class="section-head__no mono">(03)</span>
-          <h2 class="section-head__title" id="caps-title">Capa<em class="serif">bilities</em></h2>
+          <span class="section-head__no mono" data-decode><b>03</b>Skill tree</span>
+          <h2 class="section-head__title" id="caps-title">Capa<em class="hl">bilities</em></h2>
           <span class="section-head__zh zh">能力范围</span>
         </header>
         <ol class="caps__list" data-caps></ol>
       </section>
 
-      <!-- Toolkit · Swatch fan -->
-      <section class="section toolkit wrap" id="toolkit" aria-labelledby="toolkit-title" data-folio="04" data-folio-name="Toolkit">
-        <header class="section-head">
+      <!-- Toolkit · card hand -->
+      <section class="section toolkit wrap" id="toolkit" aria-labelledby="toolkit-title" data-folio="04" data-folio-name="Gear">
+        <header class="section-head" data-ghost="Gear">
           <span class="section-head__rule"></span>
-          <span class="section-head__no mono">(04)</span>
-          <h2 class="section-head__title" id="toolkit-title">Tool<em class="serif">kit</em></h2>
+          <span class="section-head__no mono" data-decode><b>04</b>Equipment</span>
+          <h2 class="section-head__title" id="toolkit-title">Tool<em class="hl">kit</em></h2>
           <span class="section-head__zh zh">工具与技术</span>
         </header>
         <div class="toolkit__grid">
@@ -210,14 +230,14 @@
       </section>
 
       <!-- Process · horizontal -->
-      <section class="process inverse" id="process" aria-labelledby="process-title" data-folio="05" data-folio-name="Process">
+      <section class="process inverse" id="process" aria-labelledby="process-title" data-folio="05" data-folio-name="Flow">
         <div class="process__pin">
           <div class="process__track" data-process>
             <div class="process__intro">
-              <span class="section-head__no mono">(05)</span>
-              <h2 class="process__title" id="process-title">How the<br /><em class="serif">work</em> happens</h2>
+              <span class="section-head__no mono" data-decode><b>05</b>Mission flow</span>
+              <h2 class="process__title" id="process-title">How the<br /><em class="hl">mission</em> runs</h2>
               <p class="zh">工作流程</p>
-              <p class="process__lede">A four-step process — flexible in pace, rigid in craft. Placeholder copy.</p>
+              <p class="process__lede">Four stages — flexible in pace, strict in craft. Placeholder copy.</p>
             </div>
           </div>
           <div class="process__bar"><span></span></div>
@@ -225,20 +245,20 @@
       </section>
 
       <!-- Experience -->
-      <section class="section exp wrap" id="experience" aria-labelledby="exp-title" data-folio="06" data-folio-name="Experience">
-        <header class="section-head">
+      <section class="section exp wrap" id="experience" aria-labelledby="exp-title" data-folio="06" data-folio-name="Archive">
+        <header class="section-head" data-ghost="Archive">
           <span class="section-head__rule"></span>
-          <span class="section-head__no mono">(06)</span>
-          <h2 class="section-head__title" id="exp-title">Expe<em class="serif">rience</em></h2>
+          <span class="section-head__no mono" data-decode><b>06</b>Archive log</span>
+          <h2 class="section-head__title" id="exp-title">Expe<em class="hl">rience</em></h2>
           <span class="section-head__zh zh">经历与荣誉</span>
         </header>
         <div class="exp__grid">
           <div>
-            <h3 class="exp__h mono">Positions &amp; Education</h3>
+            <h3 class="exp__h mono">// Positions &amp; Education</h3>
             <ul class="exp__list" data-exp></ul>
           </div>
           <div>
-            <h3 class="exp__h mono">Recognition</h3>
+            <h3 class="exp__h mono">// Achievements</h3>
             <ul class="exp__list exp__list--awards" data-awards></ul>
           </div>
         </div>
@@ -246,14 +266,14 @@
 
       <!-- Contact -->
       <section class="contact wrap" id="contact" aria-labelledby="contact-title" data-folio="07" data-folio-name="Contact">
-        <p class="mono contact__kicker">(07) — Contact <span class="zh">联系</span></p>
+        <p class="mono contact__kicker" data-decode><b>07</b>Party invite <span class="zh">组队邀请</span></p>
         <h2 class="contact__title" id="contact-title">
-          <span class="line"><span>Let&rsquo;s make</span></span>
-          <span class="line"><span>something <em class="serif">inevitable.</em></span></span>
+          <span class="line"><span>Ready to</span></span>
+          <span class="line"><span><em class="hl">join</em> the party?</span></span>
         </h2>
         <div class="contact__row">
           <a class="magnetic-btn" href="#" data-magnetic data-email-link data-cursor="Write">
-            <span class="magnetic-btn__inner">Start a<br />project <span aria-hidden="true">↗</span></span>
+            <span class="magnetic-btn__inner"><small>Accept</small>Start a<br />project <span aria-hidden="true">↗</span></span>
           </a>
           <div class="contact__info">
             <button class="contact__email" type="button" data-copy-email data-cursor="Copy">
@@ -267,17 +287,12 @@
       </section>
     </main>
 
-    <footer class="footer inverse">
-      <div class="colorbar" aria-hidden="true">
-        <svg class="reg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" /><path d="M12 0v24M0 12h24" /></svg>
-        <span style="--k: 100%"></span><span style="--k: 75%"></span><span style="--k: 50%"></span><span style="--k: 25%"></span><span style="--k: 10%"></span>
-        <span class="cb-paper"></span><span class="cb-signal"></span><span class="cb-over"></span><span class="cb-multi"></span>
-        <svg class="reg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" /><path d="M12 0v24M0 12h24" /></svg>
-      </div>
+    <footer class="footer">
+      <div class="footer__tape" aria-hidden="true"></div>
       <div class="footer__row wrap mono">
         <span>&copy; <span data-year></span> <span data-site="name"></span> — Placeholder content</span>
-        <span>PROOF Template v1.0</span>
-        <a href="#top" data-cursor="Top">Back to top ↑</a>
+        <span>OPERATOR Template v2.0</span>
+        <a href="#top" data-cursor="Top">Back to title ↑</a>
       </div>
       <div class="footer__giant" aria-hidden="true"><span data-site="name"></span></div>
     </footer>
@@ -285,8 +300,9 @@
     <!-- Case study -->
     <div class="case" role="dialog" aria-modal="true" aria-labelledby="case-title" aria-hidden="true" data-lenis-prevent>
       <div class="case__bg"></div>
+      <div class="case__band" aria-hidden="true"></div>
       <div class="case__scroll">
-        <button class="case__close mono" type="button" data-case-close data-cursor="Close">Close <span aria-hidden="true">✕</span></button>
+        <button class="case__close mono" type="button" data-case-close data-cursor="Close">Close <kbd>Esc</kbd></button>
         <div class="case__cover"><img alt="" /></div>
         <div class="case__body wrap"></div>
       </div>

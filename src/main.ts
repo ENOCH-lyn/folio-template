@@ -1,6 +1,9 @@
-import '@fontsource-variable/bricolage-grotesque/standard.css'
-import '@fontsource/instrument-serif/400.css'
-import '@fontsource/instrument-serif/400-italic.css'
+import '@fontsource-variable/anybody/standard.css'
+import '@fontsource-variable/archivo/standard.css'
+import '@fontsource/chakra-petch/400.css'
+import '@fontsource/chakra-petch/500.css'
+import '@fontsource/chakra-petch/600.css'
+import '@fontsource/chakra-petch/700.css'
 import '@fontsource-variable/jetbrains-mono/index.css'
 import './styles/tokens.css'
 import './styles/base.css'
@@ -18,6 +21,7 @@ import { initWorks } from './motion/works'
 import { initCase } from './motion/case'
 import { initToolkit } from './motion/toolkit'
 import { initProcess } from './motion/process'
+import { initHud } from './motion/hud'
 import { initCursor, initMagnetic, initTheme, initGrid, initClock, initMenu, initCopyEmail, toast } from './motion/ui'
 
 render()
@@ -28,7 +32,7 @@ let halftone: ReturnType<typeof initHalftone> = null
 try {
   halftone = initHalftone($<HTMLCanvasElement>('.hero__canvas'))
 } catch (err) {
-  console.warn('[proof] halftone disabled:', err)
+  console.warn('[operator] halftone disabled:', err)
 }
 
 initWordmark()
@@ -43,6 +47,7 @@ initWorks()
 initToolkit()
 initProcess()
 initReveals()
+initHud()
 const caseStudy = initCase()
 
 runIntro(halftone).then(() => {
