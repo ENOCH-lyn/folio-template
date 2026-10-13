@@ -1,11 +1,12 @@
-# OPERATOR FILE — 视觉设计系统 / Design System v2.0
+# OPERATOR FILE — 视觉设计系统 / Design System v3.0
 
 > 本模板的视觉概念叫 **OPERATOR FILE（干员档案）**。
 > 面向游戏 / 二次元方向的视觉设计师：把作品集当成二游官网里的一份「干员档案」——启动序列、关卡选择、档案卡、装备、任务流程、组队邀请。
 > 关键词：**Tactical HUD（战术界面） × Cel Contrast（赛璐璐式高对比） × Signal Orange（信号橙）**。
 > 参考气质：明日方舟、绝区零、鸣潮、少女前线 2 等官网与游戏 UI 的现代化排版——不复刻任何具体作品的图形资产。
 
-> v1.0 的「PROOF 打样」暖纸 + 印刷标记方向已废弃（反馈：配色偏传统、不够二次元）。动效系统保留，视觉语言整体替换。
+> v1.0 的「PROOF 打样」暖纸 + 印刷标记方向已废弃（反馈：配色偏传统、不够二次元）。
+> v3.0：Hero 网点颗粒替换为**斜向光带场**并新增 **KV 主视觉窗口**；全站改为**中文主语言、英文作设计标注**；装备卡扇改为「目标状态 + 逐帧缓动」模型；内容抽离到 `content/site.json` 并配套可视化后台。
 
 ---
 
@@ -33,7 +34,7 @@
 | `--c-fg` | Signal White 白 | `#F4F4F5` | 标题、正文 | ~8% |
 | `--c-mid` | Steel 钢灰 | `#8A8A93` | 次级信息、Meta | ~2% |
 | `--c-accent` | Signal Orange 信号橙 | `#FF5B14` | 唯一强调色：交互、关键数据、标题第二行、按钮 | **≤ 8%** |
-| `--c-accent-2` | Cyan 青 | `#2DE2E6` | 第二色版：网点、SR 稀有度、少量 HUD 点缀 | **≤ 2%** |
+| `--c-accent-2` | Cyan 青 | `#2DE2E6` | 第二色：光带细线、SR 稀有度、LOCK 角标、少量 HUD 点缀 | **≤ 2%** |
 | `--c-line` | Rule 细线 | `fg 12%` | 1px 分隔线 | — |
 | `--c-line-strong` | Rule Strong | `fg 30%` | 边框、描边水印 | — |
 
@@ -48,7 +49,7 @@
 | `--c-mid` | `#5E5F66` |
 | `--c-accent` | `#FF5B14`（不变） |
 
-- DAY 主题下网点第二色版由青改为黑，保持「橙 + 墨」的高对比。
+- DAY 主题下光带第二色由青改为黑，保持「橙 + 墨」的高对比；KV 窗口在 DAY 下仍保持深底，作为页面里的「屏幕」。
 - 刻意避开暖米色 / 暖灰：底色一律是**冷调**中性色。
 
 ### 1.3 规则
@@ -68,9 +69,18 @@
 | Text | **Archivo Variable** | `wght 400–600` | 正文、简介 |
 | HUD | **Chakra Petch** 500/600 | 全大写 · 字距 0.08–0.14em · 12px | 导航、标签、Meta、按钮 |
 | Number | **JetBrains Mono Variable** | `tabular-nums` | 计数、时钟、进度百分比 |
-| 中文 | 系统黑体（PingFang SC / Noto Sans SC） | 字距 0.1em | 中文副标题、竖排字 |
+| 中文 | **Noto Sans SC Variable**（本地打包） | `wght 400–900` · 不转大写 | 主语言：标题、正文、导航、按钮 |
 
-字号阶梯（流式 `clamp`）：
+### 2.1 中英文规则
+
+- **中文是主语言**：所有信息都必须有中文表达；英文只作为设计性的小号标注，可删除而不丢信息。
+- 英文标注统一样式（`*-en` / `.nav-en` 等）：Chakra Petch 10.5px、`--c-mid`、全大写，放在中文之后或下方。
+- 中文标题行高 1.08（区块标题）/ 1.32（宣言），不使用负字距、不做 `text-transform`。
+- 中文段落不按行 SplitText（避免中英混排断行错误），改为整段淡入。
+- Decode 解码只扰乱 `[A-Za-z0-9]`，中文保持原字，避免出现乱码汉字。
+- 导航在 < 1300px 隐藏英文标注，始终不换行。
+
+### 2.2 字号阶梯（流式 `clamp`）
 
 | Token | 范围 |
 |-------|------|
@@ -95,7 +105,7 @@
 | < 600px | 4 | 12px | 16px |
 
 - 间距阶梯：`--s-1` 4 → `--s-11` 192（4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 / 128 / 192）。
-- 区块标题统一占 1–2 栏放编号，3–10 栏放标题，右侧放中文副标题；背后为超大描边英文水印（`data-ghost`）。
+- 区块标题统一占 1–2 栏放编号，3–10 栏放中文标题，右侧放英文标注；背后为超大描边英文水印（`data-ghost`）。
 - 按 `G` 打开栅格叠层自检。
 
 ---
@@ -141,16 +151,23 @@
 | **Deploy** 展开 | 雷达多边形自中心展开、数据点弹出、数值计数 | 档案 | `hud.ts` |
 | **Develop** 显影 | 图片自下而上 clip 显出，内部轻微缩放 | 卡片、立绘 | `reveal.ts` |
 | **Velocity** 速度 | 跑马灯速度与倾斜由滚动速度驱动 | 斜切色带 | `reveal.ts` |
-| **Fan** 扇开 | 装备卡随滚动从手中摊开，悬停选中 | 装备 | `toolkit.ts` |
+| **Fan** 扇开 | 装备卡随滚动摊开；悬停预览、点击锁定；离开后归位 | 装备 | `toolkit.ts` |
 | **Flip** 重排 | Cards ⇄ List 视图平滑重排 | 作品 | GSAP Flip |
 | **Breathe** 呼吸 | 字标可变字体轴随光标距离变化 | Hero | `wordmark.ts` |
-| **Halftone** 网点 | 双色版网点场流动 + 光标膨胀 | Hero | WebGL |
+| **Streak** 光带 | 多层斜向光带与速度线掠过，光标处光斑与偏移 | Hero | `herofx.ts` WebGL |
+| **KV Wipe** 主视觉切换 | 精选封面斜切擦除轮播 + 进度条 | Hero KV 窗口 | `kv.ts` |
 
 ### 5.3 规则
 
 - 进入动效只播放一次（`once`），不反复打扰阅读。
 - 解码文字时长 ≤ 0.7s，hover 解码 ≤ 0.45s。
-- `prefers-reduced-motion`：关闭 Boot / Slash / Decode / Glitch / Scan / 视差 / 跑马灯 / 平滑滚动；保留颜色与透明度过渡。
+- `prefers-reduced-motion`：关闭 Boot / Slash / Decode / Glitch / Scan / KV 轮播 / 视差 / 跑马灯 / 平滑滚动；光带只渲染一帧；保留颜色与透明度过渡。
+
+### 5.4 装备卡扇状态模型
+
+- 每张卡只有一个**目标值**（角度、抬起位移），由 `spread`（滚动展开 0–1）、`active`（悬停项）、`pinned`（锁定项）推导。
+- 每帧以 0.16 系数追赶目标，收敛后停止 ticker；滚动与悬停共享同一管线，互不打断，不会停在中间态。
+- 指针离开卡扇与列表 120ms 后回到锁定项（无锁定则回到均匀展开的静止态）。
 
 ---
 
@@ -160,21 +177,21 @@
 |------|------|
 | Header | 左：切角 logo 方块 + 姓名；中：编号导航（hover 解码，当前项下划线）；右：在线状态 + 时钟 + 栅格 / 主题按钮 |
 | HUD Chip | 左下 `区块编号 + 名称`、右下 `SYNC` 进度条与百分比，均为切角小面板 |
-| Hero | 四角取景框、Meta 行（ID / CLASS / BASE / FILES）、超宽双行字标（第二行橙）、竖排中文、左边线简介、`PRESS START` 大按钮 |
+| Hero | 四角取景框、Meta 行（编号 / 职能 / 坐标 / 档案）、超宽双行字标（第二行橙）、右侧 KV 主视觉窗口（切角框、FEATURED 角标、序号、进度条）、左边线简介、「进入作品 PRESS START」大按钮 |
 | Section Head | `编号 + 英文小标` / 双色大标题 / 中文副标题 / 描边水印 / 左侧橙色短线 + 通长细线 |
 | Work Card | 切角卡面、`FILE 0X // 领域` 标签、右上稀有度角标（SSR 橙 / SR 青 / R 灰）、星级、hover 故障 |
 | Profile | 立绘卡（LV、星级、橙色描边）、简介、战斗数据雷达、数字统计面板 |
 | Skill Row | `SK-0X` 编号框、标题 + 中文、说明、标签组；hover 面板提亮 |
 | Equipment Fan | 卡色 `accent / cyan / white / steel / black`，条带数表示熟练度 |
 | Mission Stage | 横向卡片：超大斜体橙色编号、标题、说明、标签 |
-| Contact | `READY TO JOIN THE PARTY?` 大标题、菱形 `START A PROJECT` 按钮、邮箱（点击复制）、社交 chip |
+| Contact | 「准备好一起组队了吗？」大标题、菱形「发起合作」按钮、邮箱（点击复制）、联系方式列表（邮箱 / 微信 / 电话…）、社交 chip |
 | Footer | 警示斜纹条、版权行、超大描边姓名 |
 
 ---
 
 ## 7. 图像 Imagery
 
-- 统一风格词 `STYLE`（见 `src/content.ts`）：anime key visual、cel shading、high contrast、orange and black、cinematic lighting。
+- 示意图来自 StockCake（CC0），存放于 `public/images/`，均为二次元 / 赛博霓虹 / 机甲方向，仅作版式演示。
 - 卡片封面比例：landscape 4:3 / portrait 3:4 / square / wide；在卡面内一律 `object-fit: cover`。
 - 替换为真实作品时，优先选择**暗部较多、有一个橙 / 暖色焦点**的画面，和整体配色最搭。
 
@@ -182,15 +199,15 @@
 
 ## 8. 文案语气 Voice
 
-- 英文用游戏系统语汇：Stage select、Operator file、Skill tree、Equipment、Mission flow、Archive log、Party invite。
-- 中文副标题朴素直白（精选作品、干员档案、能力范围……），保证非玩家也能读懂。
-- 所有占位文案都带「Placeholder / 占位」字样或明显的占位符（`[City]`、Client A）。
+- 中文标题带一点游戏语感又不晦涩（关卡选择、干员档案、技能树、装备、任务流程、组队邀请）。
+- 英文标注用游戏系统语汇：Stage select、Operator file、Skill tree、Equipment、Mission flow、Party invite。
+- 占位信息明显可识别：你的名字、hello@example.com、某游戏工作室。
 
 ---
 
 ## 9. 无障碍 Accessibility
 
 - 语义化结构；Skip link；`:focus-visible` 2px 橙色轮廓。
-- 装饰元素（扫描线、颗粒、取景框、水印）全部 `aria-hidden` / `pointer-events: none`。
+- 装饰元素（扫描线、光带画布、取景框、水印）全部 `aria-hidden` / `pointer-events: none`。
 - 雷达图带完整 `aria-label`；解码动画只改文本节点，结束后还原原文。
-- 窄屏（< 600px）Hero 网点场不透明度降至 0.38，保证橙色标题可读。
+- 窄屏（< 600px）Hero 光带场不透明度降至 0.38，保证橙色标题可读。

@@ -1,5 +1,5 @@
 /** 将 content.ts 中的占位内容渲染进 DOM（结构需与 sections.css 对应） */
-import { site, marquee, manifesto, projects, about, capabilities, tools, process, experience, awards, type Rank, type Swatch } from './content'
+import { site, sections, marquee, manifesto, projects, about, capabilities, tools, process, experience, awards, emphasis, type Rank, type Swatch } from './content'
 import { $, $$, h, pad, watchImage } from './env'
 
 /** 装备卡底色：固定色值，不随主题变化 */
@@ -36,7 +36,44 @@ function fillSite() {
   }
   for (const el of $$('[data-year]')) el.textContent = String(new Date().getFullYear())
   for (const a of $$<HTMLAnchorElement>('[data-email-link]')) a.href = `mailto:${site.email}`
-  document.title = `${site.name} — ${site.role} · Portfolio Template`
+  document.title = `${site.name} · ${site.role}作品集`
+  $('meta[name="description"]').setAttribute('content', site.intro)
+}
+
+/** 「精选*作品*」→ 文本 + <em class="hl"> */
+function rich(el: Element, s: string) {
+  emphasis(s).forEach((part, i) => part && el.append(i % 2 ? h('em', { class: 'hl' }, part) : part))
+}
+
+function fillSections() {
+  for (const head of $$('[data-sec]')) {
+    const sec = sections[head.dataset.sec as keyof typeof sections] as { title: string; en: string; label: string }
+    rich($('[data-sec-title]', head), sec.title)
+    $('[data-sec-en]', head).textContent = sec.en
+    $('[data-sec-label]', head).textContent = sec.label
+  }
+  const pr = sections.process
+  rich($('[data-process-title]'), pr.title)
+  $('[data-process-en]').textContent = pr.en
+  $('[data-process-label]').textContent = pr.label
+  $('[data-process-lede]').textContent = pr.lede
+
+  const c = sections.contact
+  $('[data-contact-label]').textContent = c.label
+  $('[data-contact-en]').textContent = c.en
+  $('[data-contact-button]').textContent = c.button
+  const title = $('[data-contact-title]')
+  for (const line of c.title) {
+    const inner = h('span')
+    rich(inner, line)
+    title.append(h('span', { class: 'line' }, inner))
+  }
+}
+
+function renderHeroMeta() {
+  $('[data-hero-meta]').append(
+    ...site.heroMeta.map((m) => h('span', { 'data-decode': '' }, h('b', null, m.k), ' ', m.v)),
+  )
 }
 
 function renderWordmark() {
@@ -75,34 +112,45 @@ function renderMarquee() {
   track.append(group(), group())
 }
 
+/** 宣言：中文按字拆分（便于逐字「显影」），{n} 处插入行内图片，*…* 为强调 */
 function renderManifesto() {
   const p = $('.manifesto__text')
-  manifesto.forEach((item, i) => {
-    if (i) p.append(' ')
-    if (typeof item === 'string') {
-      const hl = item.startsWith('*')
-      p.append(h('span', { class: hl ? 'manifesto__word is-hl' : 'manifesto__word' }, hl ? item.slice(1) : item))
-    } else p.append(h('span', { class: 'manifesto__pill' }, image(item.img, item.alt)))
+  p.setAttribute('aria-label', manifesto.text.replace(/\*|\{\d+\}/g, ''))
+  emphasis(manifesto.text).forEach((part, i) => {
+    for (const tok of part.split(/(\{\d+\})/)) {
+      const m = tok.match(/^\{(\d+)\}$/)
+      if (m) {
+        const im = manifesto.images[Number(m[1])]
+        if (im) p.append(h('span', { class: 'manifesto__pill', 'aria-hidden': 'true' }, image(im.src, im.alt)))
+        continue
+      }
+      // 中文逐字，英文/数字按词
+      for (const w of tok.match(/[A-Za-z0-9'’.,-]+|\s+|./gu) ?? []) {
+        if (/^\s+$/.test(w)) p.append(' ')
+        else p.append(h('span', { class: i % 2 ? 'manifesto__word is-hl' : 'manifesto__word', 'aria-hidden': 'true' }, w))
+      }
+    }
   })
+  $('[data-manifesto-en]').textContent = manifesto.en
 }
 
 function card(p: (typeof projects)[number]) {
-  const title = h('h3', { class: 'card__title' }, p.title, ' ', h('span', { class: 'zh' }, p.titleZh))
+  const title = h('h3', { class: 'card__title' }, p.title, ' ', h('span', { class: 'card__en mono' }, p.titleEn))
   return h(
     'article',
     { class: 'card', 'data-layout': p.layout, 'data-id': p.id, 'data-rank': p.rank },
     h(
       'a',
-      { class: 'card__link', href: `#${p.id}`, 'data-cursor': 'Enter', 'aria-label': `${p.title} — ${p.discipline}, ${p.year}. Open case study` },
+      { class: 'card__link', href: `#${p.id}`, 'data-cursor': '查看', 'aria-label': `${p.title}（${p.discipline}，${p.year}）— 查看项目详情` },
       h(
         'div',
         { class: 'card__frame' },
-        h('div', { class: 'card__media media', 'data-ratio': p.ratio }, image(p.cover, `${p.title} — placeholder project image`)),
+        h('div', { class: 'card__media media', 'data-ratio': p.ratio }, image(p.cover, `${p.title} 封面`)),
         brackets('card__crop'),
         h('span', { class: 'card__rank' }, p.rank),
         h('span', { class: 'card__stars', 'aria-hidden': 'true' }, '★'.repeat(STARS[p.rank])),
-        h('span', { class: 'card__tag mono' }, `File ${p.no} // ${p.discipline}`),
-        h('span', { class: 'card__enter mono', 'aria-hidden': 'true' }, 'Enter ▶'),
+        h('span', { class: 'card__tag mono' }, `FILE ${p.no} // ${p.disciplineEn}`),
+        h('span', { class: 'card__enter mono', 'aria-hidden': 'true' }, '查看详情 ▶'),
       ),
       h(
         'div',
@@ -123,16 +171,16 @@ function renderWorks() {
   const more = h(
     'div',
     { class: 'works__more' },
-    h('p', { class: 'mono works__more-kicker' }, '// Locked files'),
-    h('p', null, 'More stages unlock on request.'),
-    h('a', { href: '#contact', 'data-cursor': 'Ask' }, 'Request full archive', h('span', { 'aria-hidden': 'true' }, '↗')),
+    h('p', { class: 'mono works__more-kicker' }, '// LOCKED FILES'),
+    h('p', null, '更多项目因保密协议未公开，可单独索取。'),
+    h('a', { href: '#contact', 'data-cursor': '索取' }, '索取完整作品集', h('span', { 'aria-hidden': 'true' }, '↗')),
   )
   projects.forEach((p) => {
     // 「更多」块放在最后一张之前，使其与最后一张同行（左 5 栏 / 右 5 栏）
     if (p === projects[projects.length - 1]) works.append(more)
     works.append(card(p))
   })
-  $('[data-count-projects]').textContent = `${pad(projects.length)} Files`
+  $('[data-count-projects]').textContent = `${pad(projects.length)} FILES`
 }
 
 /** 六边形能力雷达：底网 + 数值多边形 + 顶点标签（动画见 motion/hud.ts） */
@@ -146,7 +194,7 @@ function renderRadar() {
   }
   const poly = (r: (i: number) => number) => about.radar.map((_, i) => pt(i, r(i)).map((v) => v.toFixed(2)).join(',')).join(' ')
 
-  const root = svg('svg', { viewBox: '-150 -128 300 256', class: 'radar', role: 'img', 'aria-label': `Skill radar: ${about.radar.map((s) => `${s.label} ${Math.round(s.value * 100)}`).join(', ')}` })
+  const root = svg('svg', { viewBox: '-150 -128 300 256', class: 'radar', role: 'img', 'aria-label': `能力雷达：${about.radar.map((s) => `${s.label} ${Math.round(s.value * 100)}`).join('，')}` })
   const grid = svg('g', { class: 'radar__grid' })
   for (const k of [0.25, 0.5, 0.75, 1]) grid.append(svg('polygon', { points: poly(() => R * k) }))
   about.radar.forEach((_, i) => {
@@ -167,15 +215,10 @@ function renderRadar() {
     labels.append(t)
   })
   root.append(grid, shape, dots, labels)
-  host.append(h('p', { class: 'mono about__radar-h' }, '// Combat data'), root)
+  host.append(h('p', { class: 'mono about__radar-h' }, '// 能力数据 COMBAT DATA'), root)
 }
 
 function renderAbout() {
-  const words = about.heading.split(' ')
-  const last = words.pop()
-  const heading = $('[data-about="heading"]')
-  heading.append(words.join(' ') + ' ', h('em', { class: 'hl' }, last ?? ''))
-  $('[data-about="headingZh"]').textContent = about.headingZh
   $('[data-about="level"]').textContent = about.level
   $('[data-about="faction"]').textContent = about.faction
 
@@ -189,9 +232,9 @@ function renderAbout() {
       h(
         'div',
         { class: 'stat' },
-        h('dt', { class: 'mono' }, s.label),
+        h('dt', null, s.label),
         h('dd', null, h('span', { 'data-count': String(s.value) }, String(s.value)), s.suffix ? h('sup', null, s.suffix) : null),
-        h('span', { class: 'zh' }, s.zh),
+        h('span', { class: 'stat__en mono' }, s.en),
       ),
     ),
   )
@@ -205,7 +248,7 @@ function renderCaps() {
         'li',
         { class: 'cap' },
         h('span', { class: 'cap__no mono' }, `SK-${pad(i + 1)}`),
-        h('h3', { class: 'cap__name' }, c.name, h('span', { class: 'zh' }, c.zh)),
+        h('h3', { class: 'cap__name' }, c.name, h('span', { class: 'cap__en mono' }, c.en)),
         h('p', { class: 'cap__desc' }, c.desc),
         h('ul', { class: 'cap__tags mono' }, ...c.tags.map((t) => h('li', null, t))),
       ),
@@ -221,7 +264,7 @@ function renderToolkit() {
         null,
         h(
           'button',
-          { type: 'button', 'aria-pressed': 'false', 'data-tool-index': String(i), 'aria-label': `${t.name}, ${t.use}, level ${t.level} of 5` },
+          { type: 'button', 'aria-pressed': 'false', 'data-tool-index': String(i), 'aria-label': `${t.name}，${t.use}，熟练度 ${t.level}/5` },
           h('span', null, t.name),
           h('span', null, t.code.replace(/^EQ /, '')),
         ),
@@ -256,11 +299,11 @@ function renderProcess() {
       h(
         'div',
         { class: 'step' },
-        h('div', { class: 'step__head mono' }, h('span', null, `Stage ${s.no}`), h('span', null, `${s.no} / ${pad(process.length)}`)),
+        h('div', { class: 'step__head mono' }, h('span', null, `STAGE ${s.no} · ${s.en}`), h('span', null, `${s.no} / ${pad(process.length)}`)),
         h('div', { class: 'step__no', 'aria-hidden': 'true' }, s.no),
-        h('h3', { class: 'step__name' }, s.name, h('span', { class: 'zh' }, s.zh)),
+        h('h3', { class: 'step__name' }, s.name, h('span', { class: 'step__en mono' }, s.en)),
         h('p', { class: 'step__desc' }, s.desc),
-        h('ul', { class: 'step__out mono', 'aria-label': 'Rewards' }, ...s.out.map((o) => h('li', null, o))),
+        h('ul', { class: 'step__out mono', 'aria-label': '阶段产出' }, ...s.out.map((o) => h('li', null, o))),
       ),
     ),
   )
@@ -273,8 +316,7 @@ function renderExperience() {
         'li',
         null,
         h('span', { class: 'exp__period mono' }, e.period),
-        h('div', { class: 'exp__role' }, e.role, h('small', null, e.place)),
-        h('span', { class: 'zh' }, e.zh),
+        h('div', { class: 'exp__role' }, e.role, h('small', null, e.place, h('span', { class: 'exp__en mono' }, e.en))),
       ),
     ),
   )
@@ -282,6 +324,12 @@ function renderExperience() {
     ...awards.map((a) =>
       h('li', null, h('span', { class: 'mono' }, a.year), h('div', { class: 'exp__role' }, a.name), h('span', { class: 'mono' }, a.cat)),
     ),
+  )
+}
+
+function renderContacts() {
+  $('[data-contacts]').append(
+    ...[{ label: '邮箱', value: site.email }, ...site.contacts].map((c) => h('div', null, h('dt', { class: 'mono' }, c.label), h('dd', null, c.value))),
   )
 }
 
@@ -304,6 +352,8 @@ function renderSocials() {
 
 export function render() {
   fillSite()
+  fillSections()
+  renderHeroMeta()
   renderWordmark()
   renderMarquee()
   renderManifesto()
@@ -313,5 +363,6 @@ export function render() {
   renderToolkit()
   renderProcess()
   renderExperience()
+  renderContacts()
   renderSocials()
 }

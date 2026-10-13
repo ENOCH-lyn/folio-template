@@ -34,7 +34,8 @@ function decode(el: HTMLElement, duration = 0.7) {
         let out = ''
         for (let i = 0; i < text.length; i++) {
           const c = text[i]
-          if (budget > 0 || c === ' ') out += c
+          // 只对拉丁字母/数字做乱码，中文保持原字避免宽度跳动
+          if (budget > 0 || !/[A-Za-z0-9]/.test(c)) out += c
           else out += Math.random() < 0.5 ? rand() : c
           budget--
         }

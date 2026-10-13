@@ -1,98 +1,104 @@
 [
   {
     "key": "1440-light",
-    "introMs": 9182,
+    "introMs": 4857,
     "errors": [],
     "caseFocus": "case__close mono",
     "afterClose": {
       "open": false,
       "focus": "card__link"
     },
+    "fanReset": true,
     "scrollWidth": 1440,
     "clientWidth": 1440,
     "overflowers": [],
-    "wordmarkFill": 0.685,
-    "imagesLoaded": "9/9",
+    "wordmarkFill": 0.713,
+    "imagesLoaded": "12/12",
     "webgl": true
   },
   {
     "key": "1440-dark",
-    "introMs": 7309,
+    "introMs": 4126,
     "errors": [],
     "caseFocus": "case__close mono",
     "afterClose": {
       "open": false,
       "focus": "card__link"
     },
+    "fanReset": true,
     "scrollWidth": 1440,
     "clientWidth": 1440,
     "overflowers": [],
-    "wordmarkFill": 0.685,
-    "imagesLoaded": "9/9",
+    "wordmarkFill": 0.713,
+    "imagesLoaded": "12/12",
     "webgl": true
   },
   {
     "key": "1024-light",
-    "introMs": 7412,
+    "introMs": 3993,
     "errors": [],
     "caseFocus": "case__close mono",
     "afterClose": {
       "open": false,
       "focus": "card__link"
     },
+    "fanReset": true,
     "scrollWidth": 1024,
     "clientWidth": 1024,
     "overflowers": [],
-    "wordmarkFill": 0.827,
-    "imagesLoaded": "9/9",
+    "wordmarkFill": 0.919,
+    "imagesLoaded": "12/12",
     "webgl": true
   },
   {
     "key": "1024-dark",
-    "introMs": 7432,
+    "introMs": 4087,
     "errors": [],
     "caseFocus": "case__close mono",
     "afterClose": {
       "open": false,
       "focus": "card__link"
     },
+    "fanReset": true,
     "scrollWidth": 1024,
     "clientWidth": 1024,
     "overflowers": [],
-    "wordmarkFill": 0.827,
-    "imagesLoaded": "9/9",
+    "wordmarkFill": 0.919,
+    "imagesLoaded": "12/12",
     "webgl": true
   },
   {
     "key": "390-light",
-    "introMs": 7348,
+    "introMs": 4002,
     "errors": [],
     "caseFocus": "case__close mono",
     "afterClose": {
       "open": false,
       "focus": "card__link"
     },
+    "fanReset": null,
     "scrollWidth": 390,
     "clientWidth": 390,
     "overflowers": [],
     "wordmarkFill": 1,
-    "imagesLoaded": "9/9",
+    "imagesLoaded": "12/12",
     "webgl": true
   },
   {
     "key": "390-dark",
-    "introMs": 7350,
+    "introMs": 4000,
     "errors": [],
     "caseFocus": "case__close mono",
     "afterClose": {
       "open": false,
       "focus": "card__link"
     },
+    "fanReset": null,
     "scrollWidth": 390,
     "clientWidth": 390,
     "overflowers": [],
     "wordmarkFill": 1,
-    "imagesLoaded": "9/9",
+    "imagesLoaded": "12/12",
     "webgl": true
   },
   {

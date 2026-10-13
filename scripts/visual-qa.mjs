@@ -23,31 +23,6 @@ const SECTIONS = ['.manifesto', '#work', '#about', '#capabilities', '#toolkit', 
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
-/**
- * 预热图片：文生图接口是异步生成的，未就绪时 302 到 default.jpeg（「生成中」占位图）。
- * 轮询直到全部就绪或超时（QA_WARM_TIMEOUT 秒，默认 300）。
- */
-async function warmImages() {
-  const src = await readFile('src/content.ts', 'utf8')
-  const style = src.match(/const STYLE = '([^']+)'/)?.[1] ?? ''
-  const prompts = [...src.matchAll(/\b(img|art)\('([^']+)',\s*'([a-z_0-9]+)'\)/g)].map(
-    ([, fn, raw, s]) => [fn === 'art' ? `${raw}, ${style}` : raw, s],
-  ).map(
-    ([p, s]) => `https://copilot-cn.bytedance.net/api/ide/v1/text_to_image?prompt=${encodeURIComponent(p)}&image_size=${s}`,
-  )
-  const ready = (u) =>
-    fetch(u, { redirect: 'manual' })
-      .then((r) => !(r.headers.get('location') ?? '').includes('default.jpeg'))
-      .catch(() => false)
-  const deadline = Date.now() + Number(process.env.QA_WARM_TIMEOUT ?? 300) * 1000
-  for (;;) {
-    const ok = (await Promise.all(prompts.map(ready))).filter(Boolean).length
-    console.log(`warm: ${ok}/${prompts.length} images generated`)
-    if (ok === prompts.length || Date.now() > deadline) return ok === prompts.length
-    await sleep(15000)
-  }
-}
-
 async function scrollToSel(page, sel, offset = 0) {
   await page.evaluate(
     async (sel, offset) => {
@@ -77,7 +52,6 @@ async function sweep(page) {
 
 async function run() {
   await mkdir(OUT, { recursive: true })
-  if (!process.env.QA_SKIP_WARM) await warmImages()
 
   const browser = await puppeteer.launch({
     executablePath: CHROME,
@@ -94,7 +68,7 @@ async function run() {
       const errors = []
       page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
       page.on('pageerror', (e) => errors.push(String(e)))
-      page.on('requestfailed', (r) => !r.url().includes('text_to_image') && errors.push(`requestfailed ${r.url()}`))
+      page.on('requestfailed', (r) => errors.push(`requestfailed ${r.url()}`))
 
       await page.setViewport({ width: vp.width, height: vp.height, deviceScaleFactor: 1, isMobile: vp.mobile, hasTouch: vp.mobile })
       await page.evaluateOnNewDocument((t) => localStorage.setItem('operator-theme', t), theme)
@@ -185,6 +159,34 @@ async function run() {
         focus: document.activeElement?.className ?? '',
       }))
 
+      // 装备卡扇：悬停后移开，应回到均匀展开的静止态（无中间态残留）
+      let fanReset = null
+      if (!vp.mobile) {
+        // 先把指针移到空白处，避免上一步残留的指针位置让基准态处于悬停
+        await page.mouse.move(8, vp.height / 2)
+        await scrollToSel(page, '#toolkit .toolkit__grid', -vp.height * 0.2)
+        await sleep(1500)
+        const rest = await page.$$eval('.chip', (cs) => cs.map((c) => c.style.transform))
+        const b = await page.evaluate(() => {
+          const r = document.querySelectorAll('.chip')[4].getBoundingClientRect()
+          return { x: r.left + r.width / 2, y: r.top + 30 }
+        })
+        await page.mouse.move(b.x, b.y, { steps: 6 })
+        await sleep(800)
+        await shot('27-toolkit-hover')
+        await page.mouse.move(8, vp.height / 2, { steps: 6 })
+        await sleep(1400)
+        const after = await page.$$eval('.chip', (cs) => cs.map((c) => c.style.transform))
+        // 缓动收敛存在亚像素浮点尾差：按数值容差比较
+        const nums = (t) => (t.match(/-?\d+(\.\d+)?/g) || []).map(Number)
+        fanReset = rest.every((t, k) => {
+          const a = nums(t), b2 = nums(after[k])
+          return a.length === b2.length && a.every((v, j) => Math.abs(v - b2[j]) < 0.5)
+        })
+        if (!fanReset) console.log('fan diff', rest.slice(0, 3), after.slice(0, 3))
+        await shot('28-toolkit-leave')
+      }
+
       // 移动端菜单
       if (vp.mobile) {
         await page.click('[data-menu-toggle]')
@@ -204,7 +206,7 @@ async function run() {
         const overflowers = [...document.querySelectorAll('body *')]
           .filter((el) => {
             const b = el.getBoundingClientRect()
-            return b.width > 0 && b.right > doc.clientWidth + 1 && !el.closest('.marquee, .process, .preview, .grain, .footer__giant, .case, .cursor, .menu, .toast, .loader, .hero__frame, .scanlines')
+            return b.width > 0 && b.right > doc.clientWidth + 1 && !el.closest('.marquee, .process, .preview, .footer__giant, .kv, .case, .cursor, .menu, .toast, .loader, .hero__frame, .scanlines')
           })
           .slice(0, 8)
           .map((el) => `${el.tagName.toLowerCase()}.${[...el.classList].join('.')} < ${el.parentElement?.className} "${el.textContent.trim().slice(0, 24)}" right=${Math.round(el.getBoundingClientRect().right)}`)
@@ -219,8 +221,8 @@ async function run() {
         }
       })
 
-      report.push({ key, introMs, errors, caseFocus, afterClose, ...checks })
-      console.log(key, JSON.stringify({ introMs, errors: errors.length, ...checks, caseFocus, afterClose }))
+      report.push({ key, introMs, errors, caseFocus, afterClose, fanReset, ...checks })
+      console.log(key, JSON.stringify({ introMs, errors: errors.length, ...checks, caseFocus, afterClose, fanReset }))
       await page.close()
     }
   }

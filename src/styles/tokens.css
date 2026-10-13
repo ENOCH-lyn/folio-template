@@ -38,11 +38,11 @@
   --c-line-strong: color-mix(in srgb, var(--raw-fg) 30%, transparent);
 
   /* Type */
-  --f-display: 'Anybody Variable', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --f-sans: 'Archivo Variable', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --f-hud: 'Chakra Petch', 'PingFang SC', 'Noto Sans SC', ui-monospace, sans-serif;
+  --f-display: 'Anybody Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --f-sans: 'Archivo Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --f-hud: 'Chakra Petch', 'Noto Sans SC Variable', 'PingFang SC', ui-monospace, sans-serif;
   --f-num: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
-  --f-zh: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --f-zh: 'Noto Sans SC Variable', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 
   --fs-d1: clamp(3.25rem, 10vw, 12rem);
   --fs-d2: clamp(2.25rem, 5.6vw, 6rem);

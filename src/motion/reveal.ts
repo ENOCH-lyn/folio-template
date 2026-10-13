@@ -12,7 +12,12 @@ const once = { once: true } as const
 
 /** Rise：按行从遮罩下升起 */
 function rise() {
-  const targets = [...$$('.section-head__title'), ...$$('.process__title'), ...$$('[data-split]')]
+  const targets = [...$$('.section-head__title'), ...$$('.process__title')]
+
+  // 中文长段落按行拆分会在中英混排处断错行，改为整段升起
+  for (const el of $$('[data-split]')) {
+    gsap.from(el, { autoAlpha: 0, y: 28, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', ...once } })
+  }
 
   for (const el of targets) {
     SplitText.create(el, {
@@ -79,7 +84,7 @@ function rules() {
     gsap.from(r, { scaleX: 0, duration: 1.4, ease: 'expo.inOut', scrollTrigger: { trigger: r, start: 'top 92%', ...once } })
   }
   for (const head of $$('.section-head')) {
-    const bits = $$('.section-head__no, .section-head__zh, .section-head__aside', head)
+    const bits = $$('.section-head__no, .section-head__en, .section-head__aside', head)
     gsap.from(bits, { autoAlpha: 0, y: 12, duration: 0.9, ease: 'expo.out', stagger: 0.08, delay: 0.25, scrollTrigger: { trigger: head, start: 'top 90%', ...once } })
   }
   // 列表行：顶线拉出 + 内容淡入
@@ -186,7 +191,7 @@ function folio() {
   }
 
   // Hero + 宣言都算作 [00]，跳转式滚动（锚点 / 回到顶部）时也能正确复位
-  ScrollTrigger.create({ trigger: '.hero', start: 'top top', endTrigger: '#work', end: 'top center', onToggle: (s) => s.isActive && set('00', 'Title') })
+  ScrollTrigger.create({ trigger: '.hero', start: 'top top', endTrigger: '#work', end: 'top center', onToggle: (s) => s.isActive && set('00', '标题') })
   for (const sec of $$('[data-folio]')) {
     ScrollTrigger.create({
       trigger: sec,

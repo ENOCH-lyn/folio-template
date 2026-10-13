@@ -194,7 +194,7 @@ export function initMenu() {
     open = next
     btn.setAttribute('aria-expanded', String(open))
     menu.setAttribute('aria-hidden', String(!open))
-    $('.menu-btn__label', btn).textContent = open ? 'Close' : 'Menu'
+    $('.menu-btn__label', btn).textContent = open ? '关闭' : '菜单'
     html.classList.toggle('menu-open', open)
     open ? stopScroll() : startScroll()
     if (reducedMotion) {
@@ -239,7 +239,7 @@ export function initCopyEmail() {
     btn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(site.email)
-        toast(`Copied — ${site.email}`)
+        toast(`已复制邮箱 — ${site.email}`)
       } catch {
         toast(site.email)
       }

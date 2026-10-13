@@ -5,6 +5,7 @@ import '@fontsource/chakra-petch/500.css'
 import '@fontsource/chakra-petch/600.css'
 import '@fontsource/chakra-petch/700.css'
 import '@fontsource-variable/jetbrains-mono/index.css'
+import '@fontsource-variable/noto-sans-sc/index.css'
 import './styles/tokens.css'
 import './styles/base.css'
 import './styles/sections.css'
@@ -13,7 +14,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { $ } from './env'
 import { render } from './render'
 import { initScroll, initAnchors } from './motion/scroll'
-import { initHalftone } from './motion/halftone'
+import { initHeroFx } from './motion/herofx'
+import { initKv } from './motion/kv'
 import { initWordmark } from './motion/wordmark'
 import { runIntro } from './motion/intro'
 import { initReveals } from './motion/reveal'
@@ -26,17 +28,18 @@ import { initCursor, initMagnetic, initTheme, initGrid, initClock, initMenu, ini
 
 render()
 initScroll()
-initAnchors(() => toast('Placeholder link — set it in src/content.ts'))
+initAnchors(() => toast('占位链接 — 请在后台或 content/site.json 中填写'))
 
-let halftone: ReturnType<typeof initHalftone> = null
+let heroFx: ReturnType<typeof initHeroFx> = null
 try {
-  halftone = initHalftone($<HTMLCanvasElement>('.hero__canvas'))
+  heroFx = initHeroFx($<HTMLCanvasElement>('.hero__canvas'))
 } catch (err) {
-  console.warn('[operator] halftone disabled:', err)
+  console.warn('[operator] hero fx disabled:', err)
 }
+const kv = initKv()
 
 initWordmark()
-initTheme(() => halftone?.refreshTheme())
+initTheme(() => heroFx?.refreshTheme())
 initCursor()
 initMagnetic()
 initGrid()
@@ -50,7 +53,7 @@ initReveals()
 initHud()
 const caseStudy = initCase()
 
-runIntro(halftone).then(() => {
+runIntro(heroFx, kv).then(() => {
   ScrollTrigger.refresh()
   caseStudy.openFromHash()
 })

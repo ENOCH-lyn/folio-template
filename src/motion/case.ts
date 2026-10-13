@@ -22,31 +22,31 @@ export function initCase() {
     const i = projects.indexOf(p)
     const next = projects[(i + 1) % projects.length]
     const meta: [string, string][] = [
-      ['Client', p.client],
-      ['Year', p.year],
-      ['Discipline', p.discipline],
-      ['Role', p.role],
-      ['Tools', p.tools.join(', ')],
-      ['Index', `${p.no} / ${String(projects.length).padStart(2, '0')}`],
+      ['客户', p.client],
+      ['年份', p.year],
+      ['类型', p.discipline],
+      ['职责', p.role],
+      ['工具', p.tools.join(' · ')],
+      ['编号', `${p.no} / ${String(projects.length).padStart(2, '0')}`],
     ]
-    const gallery = p.gallery.map((src, gi) => {
-      const img = h('img', { src, alt: `${p.title} — placeholder gallery image ${gi + 1}`, loading: 'lazy', decoding: 'async' })
+    const gallery = p.gallery.map((g, gi) => {
+      const img = h('img', { src: g.src, alt: g.caption || `${p.title} 图 ${gi + 2}`, loading: 'lazy', decoding: 'async' })
       watchImage(img)
-      return h('figure', null, h('div', { class: 'media' }, img), h('figcaption', { class: 'mono' }, `Fig. ${String(gi + 2).padStart(2, '0')} — Placeholder caption`))
+      return h('figure', null, h('div', { class: 'media' }, img), h('figcaption', { class: 'mono' }, `FIG.${String(gi + 2).padStart(2, '0')} — ${g.caption}`))
     })
     const nextBtn = h(
       'button',
       { class: 'case__next', type: 'button', 'data-cursor': 'Next', 'data-next': next.id },
-      h('span', { class: 'mono' }, 'Next project →'),
+      h('span', { class: 'mono' }, '下一个项目 NEXT →'),
       h('span', { class: 'case__next-title' }, next.title, ' ', h('em', { class: 'hl' }, `(${next.no})`)),
     )
     body.replaceChildren(
       h(
         'div',
         { class: 'case__head' },
-        h('span', { class: 'case__no mono' }, `(${p.no}) — Case study`),
+        h('span', { class: 'case__no mono' }, `(${p.no}) — CASE STUDY · ${p.disciplineEn}`),
         h('h2', { class: 'case__title', id: 'case-title' }, h('span', { class: 'case__title-line' }, h('span', null, p.title))),
-        h('span', { class: 'case__zh zh' }, p.titleZh),
+        h('span', { class: 'case__zh mono' }, p.titleEn),
       ),
       h('dl', { class: 'case__meta' }, ...meta.map(([k, v]) => h('div', null, h('dt', { class: 'mono' }, k), h('dd', null, v)))),
       h('div', { class: 'case__summary' }, h('p', null, p.summary)),
@@ -55,7 +55,7 @@ export function initCase() {
     )
     nextBtn.addEventListener('click', () => swap(next))
     coverImg.src = p.cover
-    coverImg.alt = `${p.title} — placeholder cover image`
+    coverImg.alt = `${p.title} 封面`
   }
 
   const open = (p: Project, from: HTMLElement | null) => {

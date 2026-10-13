@@ -37,7 +37,19 @@ export function initProcess() {
         },
       },
     })
+    // 进入钉住区前就已在视口内的步骤：不依赖 containerAnimation，随区块进入直接上墨
+    const inView = steps.filter((st) => st.offsetLeft < window.innerWidth * 0.8)
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 55%',
+      once: true,
+      onEnter: () => {
+        activate(Math.max(0, inView.length - 1))
+        gsap.from(inView.flatMap((st) => $$('.step__name, .step__desc, .step__out', st)), { y: 30, autoAlpha: 0, duration: 1, ease: 'expo.out', stagger: 0.06 })
+      },
+    })
     for (const [i, step] of steps.entries()) {
+      if (inView.includes(step)) continue
       ScrollTrigger.create({
         trigger: step,
         containerAnimation: tween,

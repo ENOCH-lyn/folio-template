@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>内容后台 · OPERATOR FILE</title>
+    <style>
+      :root {
+        --bg: #0b0b0d;
+        --bg2: #141417;
+        --bg3: #1c1c20;
+        --fg: #f4f4f5;
+        --mid: #8a8a93;
+        --line: rgb(244 244 245 / 10%);
+        --line2: rgb(244 244 245 / 20%);
+        --acc: #ff5b14;
+        --cyan: #2de2e6;
+        --bad: #ff4d6d;
+        --cut: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body { background: var(--bg); color: var(--fg); font: 14px/1.5 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; }
+      button, input, textarea, select { font: inherit; color: inherit; }
+      button { cursor: pointer; background: none; border: 0; }
+      .mono { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+      header {
+        position: sticky; top: 0; z-index: 10;
+        display: flex; align-items: center; gap: 16px;
+        padding: 12px 24px; background: rgb(11 11 13 / 88%); backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line2);
+      }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+      .brand i { width: 10px; height: 10px; background: var(--acc); rotate: 45deg; }
+      .brand small { color: var(--mid); font-weight: 400; }
+      .status { margin-left: auto; color: var(--mid); }
+      .status.dirty { color: var(--acc); }
+      .status.err { color: var(--bad); }
+      .btn { padding: 8px 16px; background: var(--bg3); border: 1px solid var(--line2); clip-path: var(--cut); white-space: nowrap; }
+      .btn:hover { border-color: var(--fg); }
+      .btn.primary { background: var(--acc); color: #0b0b0d; border-color: var(--acc); font-weight: 700; }
+      .btn.primary:hover { background: var(--fg); border-color: var(--fg); }
+      .btn:disabled { opacity: 0.4; pointer-events: none; }
+      .btn.sm { padding: 4px 10px; font-size: 12px; }
+      .btn.danger:hover { border-color: var(--bad); color: var(--bad); }
+
+      .layout { display: grid; grid-template-columns: 200px 1fr; min-height: calc(100vh - 57px); }
+      nav { padding: 20px 0; border-right: 1px solid var(--line); position: sticky; top: 57px; height: calc(100vh - 57px); overflow: auto; }
+      nav button { display: flex; justify-content: space-between; width: 100%; padding: 10px 24px; text-align: left; color: var(--mid); border-left: 3px solid transparent; }
+      nav button small { opacity: 0.6; }
+      nav button:hover { color: var(--fg); }
+      nav button.on { color: var(--fg); border-left-color: var(--acc); background: var(--bg2); }
+      main { padding: 28px 40px 120px; max-width: 1080px; }
+      h2 { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+      .lede { color: var(--mid); margin-bottom: 28px; }
+
+      .field { display: grid; grid-template-columns: 160px 1fr; gap: 16px; align-items: start; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+      .field > label { padding-top: 8px; color: var(--mid); font-size: 13px; }
+      .field > label small { display: block; font-size: 11px; opacity: 0.7; }
+      input[type='text'], input[type='number'], textarea, select {
+        width: 100%; padding: 8px 10px; background: var(--bg2); border: 1px solid var(--line2); outline: none;
+      }
+      input:focus, textarea:focus, select:focus { border-color: var(--acc); }
+      textarea { min-height: 80px; resize: vertical; line-height: 1.6; }
+      .hint { margin-top: 4px; color: var(--mid); font-size: 12px; }
+
+      .group { margin: 8px 0; padding: 4px 16px 12px; background: var(--bg2); border-left: 2px solid var(--line2); }
+      .group > .ghead { padding: 10px 0 4px; color: var(--acc); }
+
+      .arr { display: grid; gap: 10px; }
+      .item { background: var(--bg2); border: 1px solid var(--line); clip-path: var(--cut); }
+      .item > .ihead { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg3); cursor: pointer; user-select: none; }
+      .item > .ihead b { flex: 1; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .item > .ihead .no { color: var(--acc); }
+      .item > .ihead img { width: 44px; height: 28px; object-fit: cover; }
+      .item > .ibody { padding: 4px 16px 12px; }
+      .item.closed > .ibody { display: none; }
+      .item .caret { transition: rotate 0.2s; color: var(--mid); }
+      .item.closed .caret { rotate: -90deg; }
+
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+      .chips span { display: inline-flex; align-items: center; gap: 6px; padding: 3px 4px 3px 10px; background: var(--bg3); border: 1px solid var(--line2); }
+      .chips span button { color: var(--mid); padding: 0 4px; }
+      .chips span button:hover { color: var(--bad); }
+      .chips input { width: 160px; }
+
+      .img { display: flex; gap: 12px; align-items: center; }
+      .img .thumb { width: 120px; height: 76px; background: var(--bg3) center/cover; border: 1px solid var(--line2); flex: none; }
+      .img .thumb.none { display: grid; place-items: center; color: var(--mid); font-size: 11px; }
+      .img .col { display: grid; gap: 6px; flex: 1; }
+      .img .row { display: flex; gap: 6px; }
+
+      dialog { margin: auto; width: min(880px, 92vw); max-height: 82vh; padding: 0; background: var(--bg); color: var(--fg); border: 1px solid var(--line2); }
+      dialog::backdrop { background: rgb(0 0 0 / 70%); }
+      .dhead { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--line2); }
+      .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 20px; overflow: auto; max-height: 64vh; }
+      .gallery button { display: grid; gap: 6px; text-align: left; padding: 6px; border: 1px solid var(--line); }
+      .gallery button:hover { border-color: var(--acc); }
+      .gallery img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+      .gallery small { color: var(--mid); font-size: 11px; word-break: break-all; }
+
+      .drop { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; background: rgb(255 91 20 / 16%); border: 3px dashed var(--acc); font-size: 24px; font-weight: 900; pointer-events: none; }
+      .drop.on { display: grid; }
+
+      #raw { width: 100%; min-height: 70vh; font: 12px/1.6 ui-monospace, Menlo, monospace; tab-size: 2; }
+      pre.log { margin-top: 12px; padding: 12px; background: var(--bg2); font-size: 11px; white-space: pre-wrap; max-height: 260px; overflow: auto; }
+
+      .toast { position: fixed; right: 24px; bottom: 24px; z-index: 60; padding: 10px 16px; background: var(--fg); color: var(--bg); font-weight: 700; clip-path: var(--cut); translate: 0 140%; transition: translate 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+      .toast.on { translate: 0 0; }
+      .toast.err { background: var(--bad); color: #fff; }
+
+      @media (max-width: 760px) {
+        .layout { grid-template-columns: 1fr; }
+        nav { position: static; height: auto; display: flex; overflow-x: auto; padding: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+        nav button { width: auto; white-space: nowrap; border-left: 0; border-bottom: 3px solid transparent; padding: 10px 14px; }
+        nav button.on { border-bottom-color: var(--acc); }
+        nav button small { display: none; }
+        main { padding: 20px 16px 100px; }
+        .field { grid-template-columns: 1fr; gap: 4px; }
+        .field > label { padding-top: 0; }
+        header { flex-wrap: wrap; padding: 10px 16px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="brand"><i></i>内容后台 <small class="mono">Operator file · CMS</small></span>
+      <span class="status mono" id="status">载入中…</span>
+      <button class="btn" id="reload" title="放弃未保存的修改">撤销修改</button>
+      <button class="btn primary" id="save" disabled>保存 <span class="mono">⌘S</span></button>
+      <button class="btn" id="build" title="生成可部署的 dist/ 目录">构建发布</button>
+    </header>
+    <div class="layout">
+      <nav id="tabs"></nav>
+      <main id="main"></main>
+    </div>
+    <dialog id="picker">
+      <div class="dhead"><b>选择图片</b><span class="row" style="display:flex;gap:8px"><label class="btn sm">上传新图<input type="file" accept="image/*" multiple hidden id="pickUpload" /></label><button class="btn sm" data-close>关闭</button></span></div>
+      <div class="gallery" id="gallery"></div>
+    </dialog>
+    <div class="drop" id="drop">松开即可上传到 public/images</div>
+    <div class="toast" id="toast"></div>
+
+    <script type="module">
+      /* ---------- 字段定义：type = text | area | num | select | img | tags | obj | list ---------- */
+      const T = (label, en, extra = {}) => ({ type: 'text', label, en, ...extra })
+      const A = (label, en, extra = {}) => ({ type: 'area', label, en, ...extra })
+      const N = (label, en, extra = {}) => ({ type: 'num', label, en, ...extra })
+      const S = (label, options, extra = {}) => ({ type: 'select', label, options, ...extra })
+      const IMG = (label, extra = {}) => ({ type: 'img', label, ...extra })
+      const TAGS = (label, extra = {}) => ({ type: 'tags', label, ...extra })
+      const OBJ = (label, fields, extra = {}) => ({ type: 'obj', label, fields, ...extra })
+      const LIST = (label, item, extra = {}) => ({ type: 'list', label, item, ...extra })
+      const EM = '用 *星号* 包住的文字会以橙色强调'
+
+      const secFields = { title: T('标题', 'Title', { hint: EM }), en: T('英文标注', 'English'), label: T('小标签', 'Label') }
+
+      const TABS = [
+        {
+          key: 'site', name: '基本信息', en: 'Profile',
+          lede: '姓名、职能、首屏文案与联系方式。',
+          fields: {
+            name: T('姓名', 'Name'), nameEn: T('英文名', 'Name EN', { hint: '用于页脚巨型字' }), initials: T('缩写', 'Initials', { hint: '左上角徽标，2–3 个字母' }),
+            codename: T('代号', 'Codename'), role: T('职能', 'Role'), roleEn: T('职能英文', 'Role EN'),
+            city: T('城市', 'City'), cityEn: T('城市英文', 'City EN'),
+            timezone: T('时区', 'Timezone', { hint: 'IANA 时区，如 Asia/Shanghai' }), timezoneLabel: T('时区缩写', 'TZ label'),
+            email: T('邮箱', 'Email'), availability: T('接单状态', 'Availability'), yearRange: T('年份区间', 'Years'),
+            wordmark: TAGS('首屏大字（两行）', { hint: '建议两个英文单词，自动撑满屏宽' }), wordmarkZh: T('首屏竖排中文', 'Wordmark ZH'),
+            intro: A('首屏简介', 'Intro'), introEn: A('首屏简介英文', 'Intro EN'),
+            heroMeta: LIST('首屏信息条', OBJ('', { k: T('键', 'Key'), v: T('值', 'Value') }), { title: (o) => `${o.k} · ${o.v}` }),
+            contacts: LIST('其他联系方式', OBJ('', { label: T('名称', 'Label'), value: T('内容', 'Value') }), { title: (o) => `${o.label} · ${o.value}` }),
+            socials: LIST('社交链接', OBJ('', { label: T('平台', 'Label'), href: T('链接', 'URL') }), { title: (o) => o.label }),
+          },
+        },
+        {
+          key: 'projects', name: '作品', en: 'Works', list: true,
+          lede: '第一张 SSR 作品会作为首屏主视觉轮播的第一帧（共取 3 张）。拖拽或用 ↑↓ 调整顺序。',
+          item: OBJ('', {
+            id: T('ID', 'Slug', { hint: '英文短横线，唯一' }), no: T('编号', 'No.'),
+            title: T('标题', 'Title'), titleEn: T('英文标题', 'Title EN'),
+            discipline: T('类型', 'Discipline'), disciplineEn: T('类型英文', 'Discipline EN'),
+            client: T('客户', 'Client'), year: T('年份', 'Year'), role: T('职责', 'Role'),
+            tools: TAGS('工具'), summary: A('项目介绍', 'Summary'),
+            rank: S('稀有度', ['SSR', 'SR', 'R']),
+            cover: IMG('封面'),
+            ratio: S('封面比例', ['landscape', 'portrait', 'square', 'wide'], { hint: 'landscape 横 · portrait 竖 · square 方 · wide 超宽' }),
+            layout: S('卡片版式', ['a', 'b', 'c', 'd', 'e', 'f'], { hint: '控制网格中的位置与尺寸，可多试几种' }),
+            gallery: LIST('详情页图集', OBJ('', { src: IMG('图片'), caption: T('图注', 'Caption') }), { title: (o) => o.caption, thumb: (o) => o.src }),
+          }),
+          title: (o) => o.title, thumb: (o) => o.cover, badge: (o) => o.rank,
+          blank: () => ({ id: `project-${Date.now().toString(36)}`, no: '', title: '新作品', titleEn: 'New Project', discipline: '', disciplineEn: '', client: '', year: String(new Date().getFullYear()), role: '', tools: [], summary: '', rank: 'R', cover: '', ratio: 'landscape', layout: 'a', gallery: [] }),
+        },
+        {
+          key: 'about', name: '个人档案', en: 'About',
+          lede: '形象照、自我介绍、数据与雷达图。',
+          fields: {
+            portrait: IMG('形象照'), level: T('等级', 'Level'), faction: T('所属', 'Faction'),
+            body: LIST('自我介绍段落', A(''), { title: (s) => s }),
+            stats: LIST('数据卡', OBJ('', { value: N('数值', 'Value'), suffix: T('后缀', 'Suffix'), label: T('名称', 'Label'), en: T('英文', 'EN') }), { title: (o) => `${o.value}${o.suffix} ${o.label}` }),
+            radar: LIST('雷达图（建议 6 项）', OBJ('', { label: T('名称', 'Label'), en: T('英文', 'EN'), value: N('分值 0–100', 'Value') }), { title: (o) => `${o.label} · ${o.value}` }),
+          },
+        },
+        {
+          key: 'capabilities', name: '能力', en: 'Skills', list: true, lede: '能力列表（技能树）。',
+          item: OBJ('', { name: T('名称', 'Name'), en: T('英文', 'EN'), desc: A('说明', 'Description'), tags: TAGS('标签') }),
+          title: (o) => o.name, blank: () => ({ name: '新能力', en: '', desc: '', tags: [] }),
+        },
+        {
+          key: 'tools', name: '装备', en: 'Toolkit', list: true, lede: '工具卡扇，建议 8–14 张。',
+          item: OBJ('', { name: T('名称', 'Name'), code: T('卡面缩写', 'Code', { hint: '2 个字母' }), use: T('用途', 'Use'), level: N('熟练度 1–5', 'Level'), swatch: S('卡面颜色', ['accent', 'cyan', 'white', 'steel', 'black']) }),
+          title: (o) => `${o.code} · ${o.name}`, blank: () => ({ name: '新工具', code: 'NW', use: '', level: 3, swatch: 'steel' }),
+        },
+        {
+          key: 'process', name: '流程', en: 'Process', list: true, lede: '横向滚动的工作流程。',
+          item: OBJ('', { no: T('序号', 'No.'), name: T('名称', 'Name'), en: T('英文', 'EN'), desc: A('说明', 'Description'), out: T('产出', 'Output') }),
+          title: (o) => `${o.no} ${o.name}`, blank: () => ({ no: '', name: '新阶段', en: '', desc: '', out: '' }),
+        },
+        {
+          key: 'history', name: '履历', en: 'Archive', lede: '任职经历与奖项。',
+          fields: {
+            experience: LIST('任职与教育', OBJ('', { period: T('时间', 'Period'), role: T('职位', 'Role'), place: T('机构', 'Place'), en: T('英文', 'EN') }), { title: (o) => `${o.period} · ${o.role}`, root: true }),
+            awards: LIST('奖项荣誉', OBJ('', { year: T('年份', 'Year'), name: T('奖项', 'Name'), cat: T('类别', 'Category') }), { title: (o) => `${o.year} · ${o.name}`, root: true }),
+          },
+        },
+        {
+          key: 'copy', name: '栏目文案', en: 'Copy', lede: '各板块标题、宣言与跑马灯。',
+          fields: {
+            manifesto: OBJ('宣言', { text: A('正文', 'Text', { hint: `${EM}；{0} {1} 处插入下方图片` }), en: A('英文', 'EN'), images: LIST('行内图片', OBJ('', { src: IMG('图片'), alt: T('描述', 'Alt') }), { title: (o) => o.alt, thumb: (o) => o.src }) }, { root: true }),
+            marquee: TAGS('跑马灯关键词', { root: true }),
+            sections: OBJ('栏目标题', {
+              work: OBJ('01 作品', secFields), about: OBJ('02 档案', secFields), caps: OBJ('03 能力', secFields), toolkit: OBJ('04 装备', secFields),
+              process: OBJ('05 流程', { ...secFields, lede: A('导语', 'Lede') }), experience: OBJ('06 履历', secFields),
+              contact: OBJ('07 联系', { title: TAGS('大标题（每项一行）', { hint: EM }), en: T('英文标注', 'English'), label: T('小标签', 'Label'), button: T('按钮文字', 'Button') }),
+            }, { root: true }),
+          },
+        },
+        { key: 'raw', name: 'JSON 源码', en: 'Source', lede: '直接编辑 content/site.json。适合批量替换；保存前会校验格式。' },
+      ]
+
+      /* ---------- 状态 ---------- */
+      let data = null
+      let tab = location.hash.slice(1) || 'site'
+      let dirty = false
+      const $ = (s, r = document) => r.querySelector(s)
+      const el = (tag, attrs = {}, ...kids) => {
+        const e = document.createElement(tag)
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k.startsWith('on')) e.addEventListener(k.slice(2), v)
+          else if (k === 'class') e.className = v
+          else if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v)
+        }
+        e.append(...kids.flat().filter((k) => k != null && k !== false))
+        return e
+      }
+      const imgUrl = (src) => (src ? (/^https?:/.test(src) ? src : `/${src.replace(/^\.?\//, '')}`) : '')
+
+      const toast = (msg, err = false) => {
+        const t = $('#toast')
+        t.textContent = msg
+        t.classList.toggle('err', err)
+        t.classList.add('on')
+        clearTimeout(t._t)
+        t._t = setTimeout(() => t.classList.remove('on'), err ? 4200 : 2200)
+      }
+      const setStatus = (s, cls = '') => {
+        const st = $('#status')
+        st.textContent = s
+        st.className = `status mono ${cls}`
+      }
+      const touch = () => {
+        dirty = true
+        $('#save').disabled = false
+        setStatus('有未保存的修改', 'dirty')
+      }
+
+      const api = async (path, opts = {}) => {
+        const headers = { ...(opts.headers ?? {}) }
+        const token = localStorage.getItem('admin-token')
+        if (token) headers['x-admin-token'] = token
+        const r = await fetch(path, { ...opts, headers })
+        const body = await r.json().catch(() => ({}))
+        if (r.status === 401) {
+          const t = prompt('请输入后台令牌（ADMIN_TOKEN）')
+          if (t) { localStorage.setItem('admin-token', t); return api(path, opts) }
+        }
+        if (!r.ok) throw new Error(body.error ?? `HTTP ${r.status}`)
+        return body
+      }
+
+      /* ---------- 渲染 ---------- */
+      function input(def, get, set) {
+        const v = get()
+        if (def.type === 'text') return el('input', { type: 'text', value: v ?? '', oninput: (e) => (set(e.target.value), touch()) })
+        if (def.type === 'num') return el('input', { type: 'number', value: v ?? 0, oninput: (e) => (set(Number(e.target.value)), touch()) })
+        if (def.type === 'area') {
+          const ta = el('textarea', { oninput: (e) => { set(e.target.value); fit(e.target); touch() } })
+          ta.value = v ?? ''
+          const fit = (t) => { t.style.height = 'auto'; t.style.height = `${t.scrollHeight + 2}px` }
+          requestAnimationFrame(() => fit(ta))
+          return ta
+        }
+        if (def.type === 'select') {
+          return el('select', { onchange: (e) => (set(e.target.value), touch()) }, ...def.options.map((o) => el('option', { value: o, selected: o === v }, o)))
+        }
+        if (def.type === 'tags') return tags(get, set)
+        if (def.type === 'img') return imgField(get, set)
+        if (def.type === 'obj') return obj(def, get() ?? set({}) ?? get())
+        if (def.type === 'list') return list(def, () => get() ?? [], set)
+      }
+
+      function field(def, get, set) {
+        if (def.type === 'obj' && def.label && !def.root) {
+          return el('div', { class: 'group' }, el('div', { class: 'ghead mono' }, def.label), obj(def, get()))
+        }
+        const control = input(def, get, set)
+        if (!def.label) return control
+        return el(
+          'div',
+          { class: 'field' },
+          el('label', {}, def.label, def.en ? el('small', { class: 'mono' }, def.en) : null),
+          el('div', {}, control, def.hint ? el('p', { class: 'hint' }, def.hint) : null),
+        )
+      }
+
+      function obj(def, o) {
+        return el('div', {}, ...Object.entries(def.fields).map(([k, f]) => field(f, () => o[k], (v) => (o[k] = v))))
+      }
+
+      function tags(get, set) {
+        const wrap = el('div', { class: 'chips' })
+        const draw = () => {
+          const arr = get() ?? []
+          wrap.replaceChildren(
+            ...arr.map((t, i) => el('span', {}, t, el('button', { type: 'button', title: '移除', onclick: () => { arr.splice(i, 1); set(arr); touch(); draw() } }, '×'))),
+            el('input', {
+              type: 'text', placeholder: '输入后回车添加',
+              onkeydown: (e) => {
+                if (e.key !== 'Enter' || !e.target.value.trim()) return
+                e.preventDefault()
+                set([...arr, e.target.value.trim()])
+                touch(); draw()
+                wrap.querySelector('input').focus()
+              },
+            }),
+          )
+        }
+        draw()
+        return wrap
+      }
+
+      function imgField(get, set) {
+        const thumb = el('div', { class: 'thumb' })
+        const txt = el('input', { type: 'text', placeholder: 'images/xxx.jpg 或 https://…', oninput: (e) => { set(e.target.value); paint(); touch() } })
+        const paint = () => {
+          const v = get()
+          txt.value = v ?? ''
+          thumb.style.backgroundImage = v ? `url("${imgUrl(v)}")` : ''
+          thumb.classList.toggle('none', !v)
+          thumb.textContent = v ? '' : '无图片'
+        }
+        const pick = (src) => { set(src); paint(); touch() }
+        const upload = el('input', { type: 'file', accept: 'image/*', hidden: true, onchange: async (e) => { const f = e.target.files[0]; if (f) pick(await uploadFile(f)) } })
+        paint()
+        return el(
+          'div',
+          { class: 'img' },
+          thumb,
+          el('div', { class: 'col' }, txt, el('div', { class: 'row' },
+            el('button', { class: 'btn sm', type: 'button', onclick: () => openPicker(pick) }, '从图库选择'),
+            el('label', { class: 'btn sm' }, '上传', upload),
+          )),
+        )
+      }
+
+      function list(def, get, set) {
+        const wrap = el('div', { class: 'arr' })
+        const open = new Set()
+        const isObj = def.item.type === 'obj'
+        const draw = () => {
+          const arr = get()
+          wrap.replaceChildren(
+            ...arr.map((it, i) => {
+              const move = (d) => { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; set(arr); touch(); draw() }
+              const body = el('div', { class: 'ibody' }, isObj ? obj(def.item, it) : field({ ...def.item, label: '' }, () => arr[i], (v) => (arr[i] = v)))
+              const node = el(
+                'div',
+                { class: `item ${open.has(it) ? '' : 'closed'}`, draggable: true },
+                el(
+                  'div',
+                  { class: 'ihead', onclick: (e) => { if (e.target.closest('button')) return; open.has(it) ? open.delete(it) : open.add(it); node.classList.toggle('closed') } },
+                  el('span', { class: 'caret' }, '▾'),
+                  el('span', { class: 'no mono' }, String(i + 1).padStart(2, '0')),
+                  def.thumb?.(it) ? el('img', { src: imgUrl(def.thumb(it)), alt: '' }) : null,
+                  el('b', {}, (def.title?.(it) ?? '') || '（未命名）'),
+                  def.badge?.(it) ? el('span', { class: 'mono', style: 'color:var(--acc)' }, def.badge(it)) : null,
+                  el('button', { class: 'btn sm', type: 'button', title: '上移', onclick: () => move(-1) }, '↑'),
+                  el('button', { class: 'btn sm', type: 'button', title: '下移', onclick: () => move(1) }, '↓'),
+                  el('button', { class: 'btn sm', type: 'button', title: '复制', onclick: () => { arr.splice(i + 1, 0, structuredClone(it)); set(arr); touch(); draw() } }, '复制'),
+                  el('button', { class: 'btn sm danger', type: 'button', title: '删除', onclick: () => { if (confirm('确定删除这一项？')) { arr.splice(i, 1); set(arr); touch(); draw() } } }, '删除'),
+                ),
+                body,
+              )
+              // 拖拽排序
+              node.addEventListener('dragstart', (e) => { if (e.target.closest('input,textarea,select')) return e.preventDefault(); e.dataTransfer.setData('text/x-idx', String(i)); node.style.opacity = 0.4 })
+              node.addEventListener('dragend', () => (node.style.opacity = ''))
+              node.addEventListener('dragover', (e) => { if (e.dataTransfer.types.includes('text/x-idx')) e.preventDefault() })
+              node.addEventListener('drop', (e) => {
+                const from = Number(e.dataTransfer.getData('text/x-idx'))
+                if (Number.isNaN(from) || from === i) return
+                e.preventDefault(); e.stopPropagation()
+                const [m] = arr.splice(from, 1)
+                arr.splice(i, 0, m)
+                set(arr); touch(); draw()
+              })
+              return node
+            }),
+            el('button', {
+              class: 'btn', type: 'button',
+              onclick: () => {
+                const blank = def.blank ? def.blank() : isObj ? Object.fromEntries(Object.entries(def.item.fields).map(([k, f]) => [k, f.type === 'num' ? 0 : f.type === 'tags' || f.type === 'list' ? [] : f.type === 'select' ? f.options[0] : ''])) : ''
+                arr.push(blank); open.add(blank); set(arr); touch(); draw()
+              },
+            }, '+ 新增'),
+          )
+        }
+        draw()
+        return wrap
+      }
+
+      function renderTabs() {
+        $('#tabs').replaceChildren(
+          ...TABS.map((t) => el('button', { class: t.key === tab ? 'on' : '', onclick: () => { syncRaw(); tab = t.key; location.hash = t.key; render() } }, t.name, el('small', { class: 'mono' }, t.en))),
+        )
+      }
+
+      function render() {
+        renderTabs()
+        const t = TABS.find((x) => x.key === tab) ?? TABS[0]
+        const main = $('#main')
+        const head = [el('h2', {}, t.name), el('p', { class: 'lede' }, t.lede)]
+        if (t.key === 'raw') {
+          const ta = el('textarea', { id: 'raw', spellcheck: 'false', oninput: touch })
+          ta.value = JSON.stringify(data, null, 2)
+          main.replaceChildren(...head, ta)
+          return
+        }
+        if (t.list) {
+          main.replaceChildren(...head, list({ item: t.item, title: t.title, thumb: t.thumb, badge: t.badge, blank: t.blank }, () => data[t.key], (v) => (data[t.key] = v)))
+          return
+        }
+        const root = t.key === 'site' || t.key === 'about' ? data[t.key] : data
+        main.replaceChildren(
+          ...head,
+          ...Object.entries(t.fields).map(([k, f]) =>
+            f.type === 'obj' && f.root
+              ? el('div', {}, el('h3', { class: 'mono', style: 'margin:28px 0 8px;color:var(--acc)' }, f.label), obj(f, root[k]))
+              : field(f, () => root[k], (v) => (root[k] = v)),
+          ),
+        )
+      }
+
+      /** 离开 JSON 源码页时把文本解析回 data */
+      function syncRaw() {
+        const ta = $('#raw')
+        if (!ta) return true
+        try {
+          data = JSON.parse(ta.value)
+          return true
+        } catch (e) {
+          toast(`JSON 格式错误：${e.message}`, true)
+          return false
+        }
+      }
+
+      /* ---------- 图片 ---------- */
+      async function uploadFile(file) {
+        const r = await api(`/api/upload?name=${encodeURIComponent(file.name)}`, { method: 'POST', body: file })
+        toast(`已上传 ${r.src}`)
+        return r.src
+      }
+
+      async function openPicker(onPick) {
+        const dlg = $('#picker')
+        const draw = async () => {
+          const imgs = await api('/api/images')
+          $('#gallery').replaceChildren(
+            ...imgs.map((im) => el('button', { type: 'button', onclick: () => { onPick(im.src); dlg.close() } }, el('img', { src: imgUrl(im.src), alt: '', loading: 'lazy' }), el('small', {}, `${im.name} · ${Math.round(im.size / 1024)}KB`))),
+          )
+        }
+        $('#pickUpload').onchange = async (e) => {
+          for (const f of e.target.files) await uploadFile(f)
+          e.target.value = ''
+          draw()
+        }
+        await draw()
+        dlg.showModal()
+      }
+      $('#picker [data-close]').onclick = () => $('#picker').close()
+
+      // 拖拽图片到窗口任意处：直接上传，并复制路径
+      let dragDepth = 0
+      const isFileDrag = (e) => e.dataTransfer?.types.includes('Files')
+      addEventListener('dragenter', (e) => { if (isFileDrag(e)) { dragDepth++; $('#drop').classList.add('on') } })
+      addEventListener('dragleave', (e) => { if (isFileDrag(e) && --dragDepth <= 0) { dragDepth = 0; $('#drop').classList.remove('on') } })
+      addEventListener('dragover', (e) => isFileDrag(e) && e.preventDefault())
+      addEventListener('drop', async (e) => {
+        if (!isFileDrag(e)) return
+        e.preventDefault()
+        dragDepth = 0
+        $('#drop').classList.remove('on')
+        try {
+          let last = ''
+          for (const f of e.dataTransfer.files) last = await uploadFile(f)
+          if (last) navigator.clipboard?.writeText(last).catch(() => {})
+          toast(`已上传，路径已复制：${last}`)
+        } catch (err) { toast(err.message, true) }
+      })
+
+      /* ---------- 保存 / 构建 ---------- */
+      async function save() {
+        if (!syncRaw()) return
+        try {
+          await api('/api/content', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) })
+          dirty = false
+          $('#save').disabled = true
+          setStatus(`已保存 ${new Date().toLocaleTimeString()}`)
+          toast('已保存 — 开发预览会自动刷新')
+          if (tab === 'raw') render()
+        } catch (e) {
+          setStatus('保存失败', 'err')
+          toast(e.message, true)
+        }
+      }
+
+      async function load() {
+        try {
+          data = await api('/api/content')
+          dirty = false
+          $('#save').disabled = true
+          setStatus('已同步')
+          render()
+        } catch (e) {
+          setStatus('载入失败', 'err')
+          toast(e.message, true)
+        }
+      }
+
+      $('#save').onclick = save
+      $('#reload').onclick = () => (!dirty || confirm('放弃所有未保存的修改？')) && load()
+      $('#build').onclick = async () => {
+        if (dirty && !confirm('有未保存的修改，构建将使用已保存的版本。继续？')) return
+        const b = $('#build')
+        b.disabled = true
+        b.textContent = '构建中…'
+        try {
+          const r = await api('/api/build', { method: 'POST' })
+          toast(r.ok ? '构建完成 — dist/ 可直接部署' : '构建失败，请查看日志', !r.ok)
+          if (!r.ok) $('#main').append(el('pre', { class: 'log' }, r.log))
+        } catch (e) { toast(e.message, true) }
+        b.disabled = false
+        b.textContent = '构建发布'
+      }
+      addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); save() }
+      })
+      addEventListener('beforeunload', (e) => { if (dirty) e.preventDefault() })
+
+      addEventListener('hashchange', () => {
+        const k = location.hash.slice(1)
+        if (k !== tab && TABS.some((t) => t.key === k) && syncRaw()) { tab = k; render() }
+      })
+
+      load()
+    </script>
+  </body>
+</html>

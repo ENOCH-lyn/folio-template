@@ -1,0 +1,637 @@
+{
+  "site": {
+    "name": "你的名字",
+    "nameEn": "YOUR NAME",
+    "initials": "YN",
+    "codename": "OPERATOR-01",
+    "role": "视觉设计师",
+    "roleEn": "Visual Designer",
+    "city": "上海",
+    "cityEn": "Shanghai",
+    "timezone": "Asia/Shanghai",
+    "timezoneLabel": "CST",
+    "email": "hello@example.com",
+    "availability": "接受委托中 · 2027 Q1 可排期",
+    "yearRange": "2019—2026",
+    "wordmark": [
+      "Visual",
+      "Designer"
+    ],
+    "wordmarkZh": "视觉设计",
+    "intro": "专注游戏与二次元方向的视觉设计师。做主视觉、游戏界面与角色视觉，让每一个世界在按下「开始」的那一刻就活过来。",
+    "introEn": "Key visual · Game UI · Character design for games, anime & youth culture.",
+    "heroMeta": [
+      {
+        "k": "编号",
+        "v": "OPERATOR-01"
+      },
+      {
+        "k": "职能",
+        "v": "主视觉 · 界面 · 角色"
+      },
+      {
+        "k": "坐标",
+        "v": "上海"
+      },
+      {
+        "k": "档案",
+        "v": "06 份已解锁"
+      }
+    ],
+    "contacts": [
+      {
+        "label": "微信",
+        "value": "your-wechat-id"
+      },
+      {
+        "label": "电话",
+        "value": "+86 000 0000 0000"
+      }
+    ],
+    "socials": [
+      {
+        "label": "哔哩哔哩",
+        "href": "#"
+      },
+      {
+        "label": "小红书",
+        "href": "#"
+      },
+      {
+        "label": "站酷",
+        "href": "#"
+      },
+      {
+        "label": "微博",
+        "href": "#"
+      },
+      {
+        "label": "ArtStation",
+        "href": "#"
+      },
+      {
+        "label": "Behance",
+        "href": "#"
+      }
+    ]
+  },
+  "sections": {
+    "work": {
+      "title": "精选*作品*",
+      "en": "Selected Works",
+      "label": "关卡选择"
+    },
+    "about": {
+      "title": "干员*档案*",
+      "en": "Operator Profile",
+      "label": "个人资料"
+    },
+    "caps": {
+      "title": "能力*范围*",
+      "en": "Capabilities",
+      "label": "技能树"
+    },
+    "toolkit": {
+      "title": "工具与*装备*",
+      "en": "Toolkit",
+      "label": "装备栏"
+    },
+    "process": {
+      "title": "任务*流程*",
+      "en": "Mission Flow",
+      "label": "工作方式",
+      "lede": "四个阶段：节奏灵活，品质严格。从世界观调研到资产交付，每一步都有明确的产出。"
+    },
+    "experience": {
+      "title": "经历与*荣誉*",
+      "en": "Archive Log",
+      "label": "履历档案"
+    },
+    "contact": {
+      "title": [
+        "准备好",
+        "一起*组队*了吗？"
+      ],
+      "en": "Party Invite",
+      "label": "组队邀请",
+      "button": "发起合作"
+    }
+  },
+  "marquee": [
+    "Key Visual",
+    "Game UI",
+    "Character Design",
+    "Motion Graphics",
+    "Brand Identity",
+    "Illustration",
+    "Event Visual"
+  ],
+  "manifesto": {
+    "text": "我设计让人*想走进去*的世界——{0}主视觉、界面与角色，{1}都带着节奏、信号，和一个*值得玩下去*的故事。",
+    "en": "I design worlds people want to step into — with a rhythm, a signal and a story worth playing.",
+    "images": [
+      {
+        "src": "images/m-01.jpg",
+        "alt": "雨夜霓虹城市中的角色"
+      },
+      {
+        "src": "images/m-02.jpg",
+        "alt": "夕阳下的城市少年剪影"
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": "neon-protocol",
+      "no": "01",
+      "title": "霓虹协议",
+      "titleEn": "Neon Protocol",
+      "discipline": "游戏主视觉",
+      "disciplineEn": "Key Visual",
+      "client": "客户 A",
+      "year": "2026",
+      "role": "美术指导 · 主视觉 · Logo",
+      "tools": [
+        "Photoshop",
+        "Clip Studio",
+        "After Effects"
+      ],
+      "summary": "为一款近未来动作游戏制作的上线主视觉与 Logo 体系：一个核心姿态、五种版式裁切，保证在每一个商店横幅里都成立。（占位文案，替换为你的项目介绍）",
+      "rank": "SSR",
+      "cover": "images/p01-cover.jpg",
+      "ratio": "landscape",
+      "layout": "a",
+      "gallery": [
+        {
+          "src": "images/p01-g1.jpg",
+          "caption": "城市场景氛围稿"
+        },
+        {
+          "src": "images/p01-g2.jpg",
+          "caption": "角色特写与光效"
+        }
+      ]
+    },
+    {
+      "id": "starfall",
+      "no": "02",
+      "title": "星坠小队",
+      "titleEn": "Starfall Unit",
+      "discipline": "角色视觉设计",
+      "disciplineEn": "Character Design",
+      "client": "客户 B",
+      "year": "2025",
+      "role": "角色设定 · 服装 · 配色",
+      "tools": [
+        "Clip Studio",
+        "Photoshop"
+      ],
+      "summary": "以「小队」为单位设计的六名可操作角色：统一的剪影规则、严格的色板，以及在缩略图尺寸下依然清晰可辨的服装语言。（占位文案）",
+      "rank": "SR",
+      "cover": "images/p02-cover.jpg",
+      "ratio": "portrait",
+      "layout": "b",
+      "gallery": [
+        {
+          "src": "images/p02-g1.jpg",
+          "caption": "战后休整 · 场景插画"
+        },
+        {
+          "src": "images/p02-g2.jpg",
+          "caption": "角色立绘 · 配色方案"
+        }
+      ]
+    },
+    {
+      "id": "hud-07",
+      "no": "03",
+      "title": "HUD//07",
+      "titleEn": "Tactical HUD",
+      "discipline": "游戏界面设计",
+      "disciplineEn": "Game UI",
+      "client": "个人项目",
+      "year": "2025",
+      "role": "UI 设计 · 动效 · 设计系统",
+      "tools": [
+        "Figma",
+        "After Effects",
+        "Unity"
+      ],
+      "summary": "以设计系统为方法探索的战术 HUD 与菜单体系：切角、扫描线、4pt 网格与 40 个带动效的组件。（占位文案）",
+      "rank": "SSR",
+      "cover": "images/p03-cover.jpg",
+      "ratio": "portrait",
+      "layout": "c",
+      "gallery": [
+        {
+          "src": "images/p03-g1.jpg",
+          "caption": "全息界面 · 层级示意"
+        },
+        {
+          "src": "images/p03-g2.jpg",
+          "caption": "数据面板 · 组件规范"
+        }
+      ]
+    },
+    {
+      "id": "afterglow",
+      "no": "04",
+      "title": "余晖祭",
+      "titleEn": "Afterglow Fest",
+      "discipline": "活动视觉与导视",
+      "disciplineEn": "Event Visual",
+      "client": "客户 C",
+      "year": "2024",
+      "role": "活动识别 · 导视 · 周边",
+      "tools": [
+        "Illustrator",
+        "Cinema 4D"
+      ],
+      "summary": "一场动漫游戏展的视觉识别与现场导视：巨型数字、警示胶带式横幅，以及循环播放的舞台动态视觉。（占位文案）",
+      "rank": "SR",
+      "cover": "images/p04-cover.jpg",
+      "ratio": "landscape",
+      "layout": "d",
+      "gallery": [
+        {
+          "src": "images/p04-g1.jpg",
+          "caption": "舞台主屏 · 动态循环"
+        },
+        {
+          "src": "images/p04-g2.jpg",
+          "caption": "演出视觉 · 角色版本"
+        }
+      ]
+    },
+    {
+      "id": "ripple",
+      "no": "05",
+      "title": "涟漪唱片",
+      "titleEn": "Ripple Records",
+      "discipline": "品牌与周边",
+      "disciplineEn": "Brand & Merch",
+      "client": "客户 D",
+      "year": "2023",
+      "role": "品牌识别 · 专辑封面 · 包装",
+      "tools": [
+        "Illustrator",
+        "Blender",
+        "Photoshop"
+      ],
+      "summary": "为一家虚拟偶像厂牌打造的品牌：模块化 Logo、可拼接成整幅全景的专辑封面系列，以及限量黑胶包装。（占位文案）",
+      "rank": "R",
+      "cover": "images/p05-cover.jpg",
+      "ratio": "wide",
+      "layout": "e",
+      "gallery": [
+        {
+          "src": "images/p05-g1.jpg",
+          "caption": "专辑封面 · 夜景系列"
+        },
+        {
+          "src": "images/p05-g2.jpg",
+          "caption": "偶像形象 · 舞台版"
+        }
+      ]
+    },
+    {
+      "id": "glitch-bloom",
+      "no": "06",
+      "title": "故障花开",
+      "titleEn": "Glitch Bloom",
+      "discipline": "动态海报实验",
+      "disciplineEn": "Motion & Poster",
+      "client": "客户 E",
+      "year": "2022",
+      "role": "海报系列 · 动效 · 创意编程",
+      "tools": [
+        "After Effects",
+        "TouchDesigner",
+        "p5.js"
+      ],
+      "summary": "十二张动态海报：二次元肖像被 RGB 分离故障撕开，再以霓虹线条重新组合。（占位文案）",
+      "rank": "SR",
+      "cover": "images/p06-cover.jpg",
+      "ratio": "square",
+      "layout": "f",
+      "gallery": [
+        {
+          "src": "images/p06-g1.jpg",
+          "caption": "海报 03 · 电路纹理"
+        },
+        {
+          "src": "images/p06-g2.jpg",
+          "caption": "海报 07 · 霓虹肖像"
+        }
+      ]
+    }
+  ],
+  "about": {
+    "portrait": "images/portrait.jpg",
+    "level": "LV.80",
+    "faction": "独立工作室",
+    "body": [
+      "你好，我是一名游走在插画、界面与动态之间的视觉设计师。我帮助游戏工作室、动漫 IP 与潮流品牌搭建有生命力的视觉世界。（占位文案）",
+      "独立执业之前，我在游戏公司与设计代理机构工作多年，主导过多个主视觉与 UI 项目。把这段替换成你自己的故事。"
+    ],
+    "stats": [
+      {
+        "value": 8,
+        "suffix": "+",
+        "label": "从业年限",
+        "en": "Years in play"
+      },
+      {
+        "value": 120,
+        "suffix": "+",
+        "label": "完成项目",
+        "en": "Missions cleared"
+      },
+      {
+        "value": 14,
+        "suffix": "",
+        "label": "奖项与提名",
+        "en": "Achievements"
+      },
+      {
+        "value": 6,
+        "suffix": "",
+        "label": "合作地区",
+        "en": "Regions"
+      }
+    ],
+    "radar": [
+      {
+        "label": "主视觉",
+        "en": "KV",
+        "value": 0.94
+      },
+      {
+        "label": "界面",
+        "en": "UI",
+        "value": 0.88
+      },
+      {
+        "label": "角色",
+        "en": "CHR",
+        "value": 0.76
+      },
+      {
+        "label": "动态",
+        "en": "MOT",
+        "value": 0.84
+      },
+      {
+        "label": "品牌",
+        "en": "BRD",
+        "value": 0.7
+      },
+      {
+        "label": "三维",
+        "en": "3D",
+        "value": 0.58
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "name": "主视觉与插画",
+      "en": "Key Visual",
+      "desc": "上线主视觉、活动视觉与横幅：一个足够强的核心创意，经得起任何比例的裁切。",
+      "tags": [
+        "KV",
+        "Banner",
+        "Layout"
+      ]
+    },
+    {
+      "name": "游戏界面",
+      "en": "Game UI / HUD",
+      "desc": "菜单、HUD 与界面设计系统——让界面成为世界的一部分，而不是浮在上面。",
+      "tags": [
+        "HUD",
+        "Menu",
+        "System"
+      ]
+    },
+    {
+      "name": "角色与 IP",
+      "en": "Character & IP",
+      "desc": "角色设定、服装语言与配色方案，在缩略图尺寸下依然一眼可辨。",
+      "tags": [
+        "Sheet",
+        "Costume"
+      ]
+    },
+    {
+      "name": "动态与 Live2D",
+      "en": "Motion & Live2D",
+      "desc": "片头、界面动效与 Live2D 立绘，拥有可识别的节奏感。",
+      "tags": [
+        "Motion",
+        "Rigging"
+      ]
+    },
+    {
+      "name": "品牌与周边",
+      "en": "Brand & Merch",
+      "desc": "为厂牌、偶像与粉丝社群设计 Logo、包装与周边产品。",
+      "tags": [
+        "Logo",
+        "Merch"
+      ]
+    },
+    {
+      "name": "活动与展陈",
+      "en": "Event & Exhibition",
+      "desc": "展会展台、舞台屏幕与导视系统，引导人流也制造记忆点。",
+      "tags": [
+        "Booth",
+        "Signage"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "Photoshop",
+      "code": "EQ 001",
+      "use": "绘制 · 合成",
+      "level": 5,
+      "swatch": "accent"
+    },
+    {
+      "name": "Clip Studio",
+      "code": "EQ 002",
+      "use": "插画",
+      "level": 5,
+      "swatch": "white"
+    },
+    {
+      "name": "Figma",
+      "code": "EQ 003",
+      "use": "界面 · 设计系统",
+      "level": 5,
+      "swatch": "steel"
+    },
+    {
+      "name": "Illustrator",
+      "code": "EQ 004",
+      "use": "矢量 · Logo",
+      "level": 4,
+      "swatch": "black"
+    },
+    {
+      "name": "After Effects",
+      "code": "EQ 005",
+      "use": "动效 · 片头",
+      "level": 4,
+      "swatch": "cyan"
+    },
+    {
+      "name": "Live2D",
+      "code": "EQ 006",
+      "use": "立绘绑定",
+      "level": 3,
+      "swatch": "accent"
+    },
+    {
+      "name": "Blender",
+      "code": "EQ 007",
+      "use": "三维 · 场景",
+      "level": 3,
+      "swatch": "steel"
+    },
+    {
+      "name": "Cinema 4D",
+      "code": "EQ 008",
+      "use": "三维 · 渲染",
+      "level": 3,
+      "swatch": "white"
+    },
+    {
+      "name": "Spine",
+      "code": "EQ 009",
+      "use": "2D 骨骼动画",
+      "level": 3,
+      "swatch": "black"
+    },
+    {
+      "name": "Unity",
+      "code": "EQ 010",
+      "use": "界面实装",
+      "level": 2,
+      "swatch": "cyan"
+    },
+    {
+      "name": "TouchDesigner",
+      "code": "EQ 011",
+      "use": "生成艺术",
+      "level": 3,
+      "swatch": "accent"
+    },
+    {
+      "name": "Procreate",
+      "code": "EQ 012",
+      "use": "草图",
+      "level": 4,
+      "swatch": "steel"
+    }
+  ],
+  "process": [
+    {
+      "no": "01",
+      "name": "调研",
+      "en": "Scout",
+      "desc": "梳理世界观、参考与玩家画像，找到视觉必须承载的东西。",
+      "out": [
+        "调研报告",
+        "需求简报",
+        "情绪板"
+      ]
+    },
+    {
+      "no": "02",
+      "name": "概念",
+      "en": "Concept",
+      "desc": "确立清晰的视觉方向：剪影规则、色板，以及一个锋利的核心创意。",
+      "out": [
+        "概念方案",
+        "视觉规则"
+      ]
+    },
+    {
+      "no": "03",
+      "name": "制作",
+      "en": "Craft",
+      "desc": "在插画、界面与动效之间快速迭代，直到整个系统严丝合缝。",
+      "out": [
+        "主视觉",
+        "UI Kit"
+      ]
+    },
+    {
+      "no": "04",
+      "name": "交付",
+      "en": "Launch",
+      "desc": "打磨细节、输出规范与资产交接，让世界在之后依然保持一致。",
+      "out": [
+        "设计规范",
+        "源文件",
+        "后续支持"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "period": "2023 — 至今",
+      "role": "独立视觉设计师",
+      "place": "自由职业",
+      "en": "Independent"
+    },
+    {
+      "period": "2020 — 2023",
+      "role": "高级视觉设计师",
+      "place": "某游戏工作室",
+      "en": "Senior Visual Designer"
+    },
+    {
+      "period": "2018 — 2020",
+      "role": "界面与视觉设计师",
+      "place": "某设计代理机构",
+      "en": "UI / Visual Designer"
+    },
+    {
+      "period": "2014 — 2018",
+      "role": "视觉传达设计 学士",
+      "place": "某某大学",
+      "en": "BFA"
+    }
+  ],
+  "awards": [
+    {
+      "year": "2026",
+      "name": "奖项名称",
+      "cat": "主视觉 · 金奖"
+    },
+    {
+      "year": "2025",
+      "name": "奖项名称",
+      "cat": "游戏界面 · 入围"
+    },
+    {
+      "year": "2024",
+      "name": "奖项名称",
+      "cat": "角色设计 · 优秀奖"
+    },
+    {
+      "year": "2023",
+      "name": "奖项名称",
+      "cat": "活动视觉 · 银奖"
+    },
+    {
+      "year": "2022",
+      "name": "奖项名称",
+      "cat": "动态海报 · 入选"
+    }
+  ]
+}

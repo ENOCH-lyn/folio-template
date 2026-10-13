@@ -1,9 +1,11 @@
 /** 预加载「系统启动」→ 斜切色带擦除 → Hero 入场。返回 Promise，在入场开始时 resolve */
 import { gsap } from 'gsap'
 import { $, $$, pad, reducedMotion } from '../env'
-import type { Halftone } from './halftone'
+import type { HeroFx } from './herofx'
+import type { Kv } from './kv'
 
-function waitImages(imgs: HTMLImageElement[], onProgress: (p: number) => void, timeout = 3500) {
+/** 等待图片加载，带超时：图片慢也不卡住开场 */
+function waitImages(imgs: HTMLImageElement[], onProgress: (p: number) => void, timeout = 2500) {
   let done = 0
   const total = imgs.length || 1
   return Promise.race([
@@ -28,7 +30,7 @@ function waitImages(imgs: HTMLImageElement[], onProgress: (p: number) => void, t
   ])
 }
 
-export async function runIntro(halftone: Halftone | null) {
+export async function runIntro(fx: HeroFx | null, kv: Kv) {
   const loader = $('.loader')
   const html = document.documentElement
 
@@ -42,7 +44,7 @@ export async function runIntro(halftone: Halftone | null) {
 
   if (reducedMotion) {
     loader.remove()
-    halftone?.setIntro(1)
+    fx?.setIntro(1)
     html.classList.add('is-ready')
     return
   }
@@ -52,33 +54,25 @@ export async function runIntro(halftone: Halftone | null) {
   gsap.set([...heroTargets.meta, ...heroTargets.foot], { autoAlpha: 0, y: 16 })
   gsap.set(heroTargets.header, { autoAlpha: 0 })
 
-  // 进度：字体 + 首屏图片（以首屏可见的作品封面为准），带最短时长保证仪式感
+  // 进度 = 字体 + 主视觉首图；最短 0.9s 保留仪式感，最长约 2.5s
   const count = $('.loader__count span')
   const bar = $('.loader__bar span')
-  const prog = { v: 0, target: 0 }
-  const tick = gsap.to(prog, {
-    v: 1,
-    duration: 1.6,
-    ease: 'none',
-    paused: true,
-  })
+  const prog = { v: 0, target: 0.1 }
   const render = () => {
-    const v = Math.min(prog.v, prog.target)
-    count.textContent = pad(v * 100, 3)
-    bar.style.transform = `scaleX(${v})`
+    // 数字追赶目标值，不会倒退也不会瞬间跳满
+    prog.v += (prog.target - prog.v) * 0.14
+    count.textContent = pad(prog.v * 100, 3)
+    bar.style.transform = `scaleX(${prog.v})`
   }
   gsap.ticker.add(render)
-  tick.play()
 
-  // 启动日志逐行打印
-  gsap.from($$('.loader__log li'), { autoAlpha: 0, x: -12, duration: 0.3, ease: 'power2.out', stagger: 0.28 })
+  gsap.from($$('.loader__log li'), { autoAlpha: 0, x: -12, duration: 0.25, ease: 'power2.out', stagger: 0.12 })
 
-  const imgs = $$<HTMLImageElement>('.card__media img').slice(0, 2)
+  const imgs = $$<HTMLImageElement>('.kv__slides img').slice(0, 1)
   const fonts = document.fonts ? document.fonts.ready : Promise.resolve()
   let fontsDone = 0
   let imgsDone = 0
-  const update = () => (prog.target = 0.15 + fontsDone * 0.35 + imgsDone * 0.5)
-  update()
+  const update = () => (prog.target = Math.max(prog.target, 0.1 + fontsDone * 0.4 + imgsDone * 0.5))
   await Promise.all([
     fonts.then(() => {
       fontsDone = 1
@@ -88,33 +82,36 @@ export async function runIntro(halftone: Halftone | null) {
       imgsDone = p
       update()
     }),
-    new Promise((r) => setTimeout(r, 1700)),
+    new Promise((r) => setTimeout(r, 900)),
   ])
   prog.target = 1
-  await new Promise<void>((r) => gsap.to(prog, { v: 1, duration: 0.3, onComplete: r }))
+  await new Promise<void>((r) => gsap.to(prog, { v: 1, duration: 0.25, ease: 'power2.out', onComplete: r }))
   gsap.ticker.remove(render)
-  render()
+  count.textContent = '100'
+  bar.style.transform = 'scaleX(1)'
 
-  // 橙色斜带自左扫过盖住画面 → 整体斜切退场 → 字标逐字升起
+  // 橙色斜带扫过 → 整体斜切退场 → 主视觉窗口 + 字标升起
   const band = $('.loader__band', loader)
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
-  tl.to(loader.querySelector('.loader__inner'), { autoAlpha: 0, x: 40, duration: 0.4, ease: 'power2.in' })
-    .to(band, { clipPath: 'polygon(0% 0%, 120% 0%, 100% 100%, 0% 100%)', duration: 0.6, ease: 'expo.inOut' }, '-=0.2')
+  tl.to(loader.querySelector('.loader__inner'), { autoAlpha: 0, x: 40, duration: 0.3, ease: 'power2.in' })
+    .to(band, { clipPath: 'polygon(0% 0%, 120% 0%, 100% 100%, 0% 100%)', duration: 0.5, ease: 'expo.inOut' }, '-=0.15')
     .set(loader, { background: 'transparent' })
     .fromTo(
       loader,
       { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
-      { clipPath: 'polygon(120% 0%, 100% 0%, 100% 100%, 100% 100%)', duration: 0.9, ease: 'expo.inOut' },
+      { clipPath: 'polygon(120% 0%, 100% 0%, 100% 100%, 100% 100%)', duration: 0.75, ease: 'expo.inOut' },
     )
-    .add(() => html.classList.add('is-ready'), '<0.4')
-    .to(heroTargets.chars, { yPercent: 0, duration: 1.3, stagger: 0.04 }, '<0.35')
-    .to(heroTargets.aside, { yPercent: 0, duration: 1.1, stagger: 0.08 }, '<0.3')
-    .to(heroTargets.meta, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.06 }, '<0.1')
-    .to(heroTargets.foot, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.08 }, '<0.15')
-    .to(heroTargets.header, { autoAlpha: 1, duration: 0.6 }, '<')
+    .add(() => html.classList.add('is-ready'), '<0.3')
+  const kvTl = kv.enter()
+  if (kvTl) tl.add(kvTl, '<0.05')
+  tl.to(heroTargets.chars, { yPercent: 0, duration: 1.1, stagger: 0.03 }, '<0.15')
+    .to(heroTargets.aside, { yPercent: 0, duration: 0.9, stagger: 0.06 }, '<0.25')
+    .to(heroTargets.meta, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.05 }, '<0.05')
+    .to(heroTargets.foot, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.06 }, '<0.1')
+    .to(heroTargets.header, { autoAlpha: 1, duration: 0.5 }, '<')
     .add(() => loader.remove())
+    // 让入场后的 header 恢复 mix-blend（autoAlpha 只写 opacity/visibility）
+    .add(() => gsap.set(heroTargets.header, { clearProps: 'opacity,visibility' }))
 
-  if (halftone) tl.to(halftone.intro, { v: 1, duration: 2.6, ease: 'power2.out' }, 0.6)
-  // 让入场后的 header 恢复 mix-blend（autoAlpha 只写 opacity/visibility）
-  tl.add(() => gsap.set(heroTargets.header, { clearProps: 'opacity,visibility' }))
+  if (fx) tl.to(fx.intro, { v: 1, duration: 2, ease: 'power2.out' }, 0.5)
 }
