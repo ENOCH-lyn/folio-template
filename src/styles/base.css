@@ -525,6 +525,35 @@ button:hover .roll > span,
   pointer-events: auto;
 }
 
+/* 首屏外：实底 + 发丝线，取消 difference 混合 */
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--raw-bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--c-line);
+  opacity: 0;
+  transition: opacity var(--d-ui);
+  pointer-events: none;
+}
+
+.is-scrolled .header {
+  mix-blend-mode: normal;
+  color: var(--raw-fg);
+}
+
+.is-scrolled .header::before {
+  opacity: 1;
+}
+
+.is-scrolled .header__mark {
+  background: var(--c-accent);
+  color: #0b0b0d;
+}
+
 .header__brand {
   grid-column: 1 / span 3;
   display: flex;

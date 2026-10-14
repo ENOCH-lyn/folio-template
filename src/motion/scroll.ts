@@ -11,6 +11,10 @@ export let lenis: Lenis | null = null
 export function initScroll() {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
   window.scrollTo(0, 0)
+  // 离开首屏后 header 换成实底，避免与正文叠字
+  const syncHeader = () => document.documentElement.classList.toggle('is-scrolled', window.scrollY > window.innerHeight * 0.6)
+  window.addEventListener('scroll', syncHeader, { passive: true })
+  syncHeader()
   if (reducedMotion) return
 
   lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, touchMultiplier: 1.2 })

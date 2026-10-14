@@ -2018,12 +2018,13 @@
   font-family: var(--f-display);
   font-size: var(--fg-size, 20vw);
   font-weight: 900;
-  line-height: 0.78;
+  /* 中文字面比拉丁大写更高：行高给足，底部用负边距保留“沉入页脚”的出血感 */
+  line-height: 0.96;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   white-space: nowrap;
   padding-top: var(--s-6);
-  margin-bottom: -0.06em;
+  margin-bottom: -0.1em;
   color: transparent;
   -webkit-text-stroke: 1px var(--c-line-strong);
   background: linear-gradient(transparent 55%, color-mix(in srgb, var(--c-accent) 18%, transparent));
@@ -3030,6 +3031,17 @@
 .contact__title {
   line-height: 1.04;
   letter-spacing: 0.01em;
+}
+
+/* 窄屏：按两行收字号，避免「吗？」孤行 */
+@media (max-width: 600px) {
+  .contact__title {
+    font-size: 13vw;
+  }
+
+  .contact__title .line {
+    white-space: nowrap;
+  }
 }
 
 .toolkit__name {
