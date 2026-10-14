@@ -171,25 +171,15 @@
 .hero__frame i:nth-child(3) { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
 .hero__frame i:nth-child(4) { bottom: 0; right: 0; border-width: 0 2px 2px 0; border-color: var(--c-accent); }
 
-/* 扫描光带 */
+/* 静态暗角：压住四周，让字标与 KV 成为视觉焦点（动态交给 herofx 光带） */
 .hero__scan {
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(180deg, transparent 0, color-mix(in srgb, var(--c-accent) 9%, transparent) 48%, color-mix(in srgb, var(--c-accent) 22%, transparent) 50%, transparent 52%);
-  background-size: 100% 240%;
-  animation: hero-scan 6s linear infinite;
-  mix-blend-mode: screen;
-}
-
-[data-theme='light'] .hero__scan {
-  mix-blend-mode: multiply;
-}
-
-@keyframes hero-scan {
-  from { background-position: 0 120%; }
-  to { background-position: 0 -120%; }
+  background:
+    radial-gradient(120% 90% at 70% 40%, transparent 45%, color-mix(in srgb, var(--c-bg) 70%, transparent) 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--c-bg) 55%, transparent), transparent 22%);
 }
 
 /* 左侧竖排信息条 */
@@ -1603,8 +1593,15 @@
 }
 
 .process__title {
+  margin-top: var(--s-3);
   font-size: var(--fs-d2);
-  line-height: 0.9;
+  line-height: 1.1;
+}
+
+/* SplitText 行遮罩：留出中文字面上下余量，避免升起动画裁掉笔画顶部 */
+.split-line-mask {
+  padding-block: 0.1em;
+  margin-block: -0.1em;
 }
 
 .process__lede {
